@@ -131,6 +131,11 @@
   --fl-blueberry-cream: #ffffff;
   --fl-blueberry-ink: #191e4a;
   --fl-blueberry-deep: #34409a;
+
+  --fl-mango: #f8eee2;
+  --fl-mango-cream: #ffffff;
+  --fl-mango-ink: #4a2406;
+  --fl-mango-deep: #c2570c;
 }
 
 html[data-theme="dark"] {
@@ -164,6 +169,11 @@ html[data-theme="dark"] {
   --fl-blueberry-cream: #2f376c;
   --fl-blueberry-ink: #e9ebf8;
   --fl-blueberry-deep: #aeb8ee;
+
+  --fl-mango: #4a2a12;
+  --fl-mango-cream: #66401f;
+  --fl-mango-ink: #fbebd9;
+  --fl-mango-deep: #f5b878;
 }
 
 /* Blocks that are always dark (footer, the Flavour Lab, studio notes) keep

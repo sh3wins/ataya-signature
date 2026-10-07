@@ -12,6 +12,14 @@ export type Silhouette =
 
 export type Detail = "bow" | "ruffle" | "pleat" | "drape" | "none";
 
+/** What kind of piece it is. Leave it out for a dress. */
+export type Category = "dress" | "skirt" | "top";
+export const CATEGORIES: { id: Category; label: string; plural: string }[] = [
+  { id: "dress", label: "Dress", plural: "Dresses" },
+  { id: "skirt", label: "Skirt", plural: "Skirts" },
+  { id: "top", label: "Top", plural: "Tops" },
+];
+
 export type Size = "XS" | "S" | "M" | "L" | "XL";
 
 export interface Hotspot {
@@ -27,6 +35,8 @@ export interface Product {
   name: string;
   flavour: FlavourSlug;
   collection: string;
+  category?: Category;
+  /** the cut. For a skirt it is the length; a top ignores it */
   silhouette: Silhouette;
   detail: Detail;
   fabric: string;
@@ -302,6 +312,154 @@ export const products: Product[] = [
     ],
     mood: ["playful", "dreamy"],
   },
+  // ——— Mango
+  {
+    slug: "mango-sorbet-wrap",
+    name: "Mango Sorbet Wrap",
+    flavour: "mango",
+    collection: ICE_CREAM.name,
+    silhouette: "wrap",
+    detail: "none",
+    fabric: "Cotton sateen",
+    fit: "Wraps and ties at the waist. True to size.",
+    price: 17500,
+    stock: s(3, 5, 5, 3, 2),
+    short: "Bright. Juicy. Impossible to ignore.",
+    description:
+      "A wrap dress in warm mango orange with an uneven hem that swings when you walk. Sunshine, churned.",
+    hotspots: [
+      { x: 58, y: 34, label: "Wrap tie", text: "Ties at the side, so you set the fit." },
+      { x: 44, y: 76, label: "Uneven hem", text: "Longer on one side, for movement." },
+    ],
+    mood: ["bold", "playful"],
+    fresh: true,
+    favourite: true,
+  },
+  // ——— Skirts (the three fabrics: pink, green, orange)
+  {
+    slug: "strawberry-scoop-skirt",
+    name: "Strawberry Scoop Skirt",
+    category: "skirt",
+    flavour: "strawberry",
+    collection: ICE_CREAM.name,
+    silhouette: "midi",
+    detail: "pleat",
+    fabric: "Cotton sateen",
+    fit: "Sits at the waist. True to size.",
+    price: 9800,
+    stock: s(3, 5, 5, 3, 2),
+    short: "A full scoop of pink.",
+    description: "A pleated midi skirt in strawberry pink. Full enough to twirl, neat enough for a Monday.",
+    hotspots: [
+      { x: 50, y: 24, label: "Waistband", text: "Flat at the front, a little stretch at the back." },
+      { x: 40, y: 66, label: "Pleats", text: "Pressed in, so they hold their line." },
+    ],
+    mood: ["playful", "dreamy"],
+    fresh: true,
+  },
+  {
+    slug: "pistachio-pleat-skirt",
+    name: "Pistachio Pleat Skirt",
+    category: "skirt",
+    flavour: "pistachio",
+    collection: ICE_CREAM.name,
+    silhouette: "maxi",
+    detail: "pleat",
+    fabric: "Cotton sateen",
+    fit: "Sits at the waist. True to size.",
+    price: 10500,
+    stock: s(2, 4, 5, 3, 1),
+    short: "Long, green and easy.",
+    description: "A long pleated skirt in pistachio green. It moves like a slow afternoon.",
+    hotspots: [
+      { x: 50, y: 20, label: "Waistband", text: "Flat at the front, a little stretch at the back." },
+      { x: 56, y: 70, label: "Pleats", text: "Pressed in, so they hold their line." },
+    ],
+    mood: ["calm", "dreamy"],
+    fresh: true,
+  },
+  {
+    slug: "mango-ripple-skirt",
+    name: "Mango Ripple Skirt",
+    category: "skirt",
+    flavour: "mango",
+    collection: ICE_CREAM.name,
+    silhouette: "mini",
+    detail: "ruffle",
+    fabric: "Cotton sateen",
+    fit: "Sits at the waist. True to size.",
+    price: 8900,
+    stock: s(3, 4, 4, 2, 1),
+    short: "Short, sweet, very orange.",
+    description: "A mini skirt in mango orange with a rippled hem. Made for dancing and for being looked at.",
+    hotspots: [
+      { x: 50, y: 28, label: "Waistband", text: "Flat at the front, a little stretch at the back." },
+      { x: 50, y: 70, label: "Ripple hem", text: "A ruffle all the way round." },
+    ],
+    mood: ["playful", "bold"],
+    fresh: true,
+  },
+  // ——— Tops
+  {
+    slug: "strawberry-bow-top",
+    name: "Strawberry Bow Top",
+    category: "top",
+    flavour: "strawberry",
+    collection: ICE_CREAM.name,
+    silhouette: "mini",
+    detail: "bow",
+    fabric: "Cotton sateen",
+    fit: "Fitted, with a small flare at the hem. True to size.",
+    price: 6800,
+    stock: s(3, 5, 5, 3, 2),
+    short: "Sweet on top.",
+    description: "A fitted top in strawberry pink with a bow at the waist. Goes with the skirt, or with jeans.",
+    hotspots: [
+      { x: 50, y: 62, label: "The bow", text: "Stitched at the waist, tied by hand." },
+      { x: 50, y: 30, label: "Neckline", text: "A soft sweetheart shape." },
+    ],
+    mood: ["playful", "dreamy"],
+    fresh: true,
+  },
+  {
+    slug: "pistachio-cami-top",
+    name: "Pistachio Cami",
+    category: "top",
+    flavour: "pistachio",
+    collection: ICE_CREAM.name,
+    silhouette: "slip",
+    detail: "none",
+    fabric: "Cotton sateen",
+    fit: "Relaxed, with adjustable straps.",
+    price: 5900,
+    stock: s(4, 5, 5, 3, 2),
+    short: "The easy one.",
+    description: "A simple cami in pistachio green. Thin straps, clean lines, goes with everything.",
+    hotspots: [{ x: 50, y: 30, label: "Straps", text: "Thin and adjustable." }],
+    mood: ["calm", "playful"],
+    fresh: true,
+  },
+  {
+    slug: "mango-ruffle-top",
+    name: "Mango Ruffle Top",
+    category: "top",
+    flavour: "mango",
+    collection: ICE_CREAM.name,
+    silhouette: "mini",
+    detail: "ruffle",
+    fabric: "Cotton sateen",
+    fit: "Fitted, with a ruffled hem. True to size.",
+    price: 6500,
+    stock: s(3, 4, 5, 3, 1),
+    short: "A little orange drama.",
+    description: "A fitted top in mango orange with a ruffled hem. Bright enough to be the whole outfit.",
+    hotspots: [
+      { x: 50, y: 66, label: "Ruffle hem", text: "Flares out just below the waist." },
+      { x: 50, y: 30, label: "Neckline", text: "A soft sweetheart shape." },
+    ],
+    mood: ["bold", "playful"],
+    fresh: true,
+  },
 ];
 
 export const productMap = Object.fromEntries(products.map((p) => [p.slug, p]));
@@ -312,6 +470,14 @@ export function getProduct(slug: string): Product | undefined {
 
 export function productsByFlavour(flavour: FlavourSlug): Product[] {
   return products.filter((p) => p.flavour === flavour);
+}
+
+export const categoryOf = (p: Product): Category => p.category ?? "dress";
+
+/** "midi skirt", "top", "wrap" — the short label under a piece */
+export function cutLabel(p: Product): string {
+  const c = categoryOf(p);
+  return c === "top" ? "top" : c === "skirt" ? `${p.silhouette} skirt` : p.silhouette;
 }
 
 export function isSoldOut(p: Product): boolean {

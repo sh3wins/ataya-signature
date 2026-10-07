@@ -1,6 +1,6 @@
 import { useId } from "react";
 import { flavourMap, type FlavourSlug } from "@/lib/flavours";
-import type { Detail, Silhouette } from "@/lib/products";
+import type { Category, Detail, Silhouette } from "@/lib/products";
 import { darken, lighten, mix } from "@/lib/colour";
 
 /**
@@ -13,6 +13,8 @@ export interface DressArtProps {
   flavour: FlavourSlug;
   silhouette: Silhouette;
   detail: Detail;
+  /** dress (default), skirt or top. A skirt is drawn from the waist down, a top from the waist up. */
+  garment?: Category;
   tone?: 0 | 1 | 2 | 3;
   view?: "front" | "back";
   sway?: boolean;
@@ -49,6 +51,19 @@ const shapes: Record<Silhouette, Shape> = {
   tiered: { waist: 170, wl: 126, wr: 174, hem: 450, hl: 36, hr: 264, bulge: 0.4 },
   wrap: { waist: 170, wl: 126, wr: 174, hem: 410, hemR: 350, hl: 56, hr: 238, bulge: 0.45 },
 };
+
+/** The little flare at the bottom of a top */
+const topShape: Shape = { waist: 170, wl: 126, wr: 174, hem: 226, hl: 104, hr: 196, bulge: 0.5 };
+
+/** Frames the drawing on the piece itself, keeping the same proportions as the full dress frame */
+function frame(garment: Category, s: Shape): string {
+  if (garment === "dress") return "0 0 300 540";
+  const top = garment === "top" ? 12 : s.waist - 26;
+  const bottom = (garment === "top" ? topShape.hem : Math.max(s.hem, s.hemR ?? 0)) + 36;
+  const h = Math.max((bottom - top) * 1.12, garment === "top" ? 330 : 300);
+  const w = h * (300 / 540);
+  return `${n(150 - w / 2)} ${n((top + bottom) / 2 - h / 2)} ${n(w)} ${n(h)}`;
+}
 
 function hemPath(from: P, to: P, sag: number, scallops: number): string {
   const [x0, y0] = from;
@@ -118,22 +133,25 @@ export default function DressArt({
   flavour,
   silhouette,
   detail,
+  garment = "dress",
   tone = 0,
   view = "front",
   sway = true,
   shadow = true,
   className,
   title,
-  viewBox = "0 0 300 540",
+  viewBox,
 }: DressArtProps) {
   const uid = useId().replace(/:/g, "");
   const f = flavourMap[flavour];
   const [light, mid, deep] = tonePalette(flavour, tone);
   const accent =
     tone === 2 ? f.raw.cream : tone === 3 ? f.raw.secondaryColour : f.raw.secondaryColour;
-  const s = shapes[silhouette];
-  const scallops = detail === "ruffle" ? (silhouette === "mini" ? 9 : 11) : 0;
-  const isTiered = silhouette === "tiered";
+  const isTop = garment === "top";
+  const isSkirt = garment === "skirt";
+  const s = isTop ? topShape : shapes[silhouette];
+  const scallops = detail === "ruffle" ? (isTop ? 7 : silhouette === "mini" ? 9 : 11) : 0;
+  const isTiered = silhouette === "tiered" && !isTop;
   const bodice = view === "back" ? bodiceBack : silhouette === "slip" ? bodiceSlip : bodiceFront;
   const g = (n: string) => `${n}-${uid}`;
 
@@ -153,7 +171,7 @@ export default function DressArt({
 
   return (
     <svg
-      viewBox={viewBox}
+      viewBox={viewBox ?? frame(garment, s)}
       className={className}
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
@@ -199,12 +217,12 @@ export default function DressArt({
         </filter>
       </defs>
 
-      {shadow && (
+      {shadow && !isTop && (
         <ellipse cx="150" cy={Math.max(s.hem, s.hemR ?? 0) + 24} rx="110" ry="12" fill={`url(#${g("floor")})`} />
       )}
 
       {/* Straps */}
-      <g stroke={deep} strokeWidth={silhouette === "slip" ? 1.6 : 3} strokeLinecap="round" fill="none">
+      <g display={isSkirt ? "none" : undefined} stroke={deep} strokeWidth={silhouette === "slip" ? 1.6 : 3} strokeLinecap="round" fill="none">
         <path d={view === "back" ? "M 122 98 L 128 22" : "M 119 78 L 127 20"} />
         <path d={view === "back" ? "M 178 98 L 172 22" : "M 181 78 L 173 20"} />
       </g>
@@ -233,7 +251,7 @@ export default function DressArt({
                 <path key={i} d={d} />
               ))}
             </g>
-            {silhouette === "wrap" && (
+            {silhouette === "wrap" && !isTop && (
               <path
                 d={`M ${s.wr} ${s.waist + 2} C 170 250 120 330 ${s.hl + 30} ${s.hem - 6}`}
                 stroke={deep}
@@ -255,7 +273,7 @@ export default function DressArt({
       </g>
 
       {/* Bodice */}
-      <g filter={`url(#${g("grain")})`}>
+      <g display={isSkirt ? "none" : undefined} filter={`url(#${g("grain")})`}>
         <path d={bodice} fill={`url(#${g("fabric")})`} />
         <path d={bodice} fill={`url(#${g("sheen")})`} opacity="0.6" />
         {view === "back" && <path d="M 150 102 L 150 250" stroke={deep} strokeWidth="1.4" strokeDasharray="2 3" />}
@@ -263,10 +281,20 @@ export default function DressArt({
           <path d="M 122 92 Q 150 118 178 92" fill="none" stroke={deep} strokeOpacity="0.4" strokeWidth="2" />
         )}
       </g>
-      <path d="M 124 172 Q 150 176 176 172" stroke={deep} strokeWidth="2.5" fill="none" opacity="0.6" />
+      {isSkirt ? (
+        // a skirt gets a waistband instead
+        <g filter={`url(#${g("grain")})`}>
+          <path d="M 124 160 Q 150 155 176 160 L 176 176 Q 150 181 124 176 Z" fill={mid} />
+          <path d="M 124 160 Q 150 155 176 160 L 176 176 Q 150 181 124 176 Z" fill={`url(#${g("fabric")})`} opacity="0.7" />
+          <path d="M 124 176 Q 150 181 176 176" stroke={deep} strokeWidth="1.6" fill="none" opacity="0.7" />
+          <path d="M 125 161 Q 150 156 175 161" stroke="#fff" strokeOpacity="0.4" strokeWidth="1.2" fill="none" />
+        </g>
+      ) : (
+        <path d="M 124 172 Q 150 176 176 172" stroke={deep} strokeWidth="2.5" fill="none" opacity="0.6" />
+      )}
 
       {/* Details */}
-      {detail === "drape" && view === "front" && (
+      {detail === "drape" && view === "front" && !isSkirt && (
         <path
           d="M 116 80 C 140 96 150 140 176 170 C 170 132 150 104 132 76 Z"
           fill={accent}

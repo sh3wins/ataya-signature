@@ -125,7 +125,7 @@ export default async function FlavourPage(props: PageProps<"/flavours/[slug]">) 
           <h2 id="menu" className="font-display text-title">
             The full {f.name.toLowerCase()} menu
           </h2>
-          <p className="text-sm text-muted">{items.length} dresses</p>
+          <p className="text-sm text-muted">{items.length} pieces</p>
         </div>
         <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4">
           {items.map((p) => (

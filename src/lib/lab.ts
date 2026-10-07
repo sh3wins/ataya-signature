@@ -46,6 +46,26 @@ const curated: Record<string, Omit<Mix, "a" | "b">> = {
     note: "Layers of blue into cream. A classic in tiers.",
     lookSlug: "blueberry-cheesecake-tier",
   },
+  [key("strawberry", "mango")]: {
+    name: "Strawberry Mango",
+    note: "Pink into orange, like the sky at six. Wear it somewhere with a view.",
+    lookSlug: "mango-sorbet-wrap",
+  },
+  [key("vanilla", "mango")]: {
+    name: "Mango Cream",
+    note: "Gold folded through ivory. Soft, sunny, hard to say no to.",
+    lookSlug: "mango-sorbet-wrap",
+  },
+  [key("pistachio", "mango")]: {
+    name: "Mango Pistachio",
+    note: "Green and orange. Loud on paper, lovely in person.",
+    lookSlug: "pistachio-crema-midi",
+  },
+  [key("blueberry", "mango")]: {
+    name: "Sunset Berry",
+    note: "Warm orange against cool blue. The whole evening in one scoop.",
+    lookSlug: "midnight-berry-gown",
+  },
   [key("pistachio", "blueberry")]: {
     name: "Blue Pistachio",
     note: "Cool green, cool blue. Surprisingly calm.",
@@ -77,7 +97,8 @@ export interface BuildChoice {
 export function matchProduct(c: BuildChoice): Product {
   let best = products[0];
   let bestScore = -1;
-  for (const p of products) {
+  // the builder designs a dress, so only dresses are in the running
+  for (const p of products.filter((x) => (x.category ?? "dress") === "dress")) {
     let score = 0;
     if (p.flavour === c.flavour) score += 4;
     if (p.silhouette === c.silhouette) score += 3;

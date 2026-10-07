@@ -47,11 +47,11 @@ function FlavourObject({ f, active, onActive }: { f: Flavour; active: boolean; o
         data-flavour-colour={f.secondaryColour}
         data-cursor="taste"
         className="absolute inset-0 flex flex-col justify-between p-5 md:p-6"
-        aria-label={`${f.name}: ${f.tagline} ${count} dresses. Enter the collection.`}
+        aria-label={`${f.name}: ${f.tagline} ${count} pieces. Enter the collection.`}
       >
         <div className="flex items-start justify-between">
           <span className="eyebrow opacity-70">{String(flavours.indexOf(f) + 1).padStart(2, "0")}</span>
-          <span className="eyebrow opacity-70">{count} dresses</span>
+          <span className="eyebrow opacity-70">{count} pieces</span>
         </div>
 
         {/* dress peeks up from behind the scoop */}

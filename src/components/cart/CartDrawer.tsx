@@ -56,7 +56,7 @@ export default function CartDrawer() {
               <p className="font-display text-2xl">Your scoop is empty.</p>
               <p className="mt-2 text-sm text-muted">Fresh flavours are waiting in the freezer.</p>
               <ButtonLink href="/dresses" variant="outline" className="mt-6" onClick={() => setOpen(false)}>
-                Browse dresses
+                Browse the shop
               </ButtonLink>
             </div>
           ) : (

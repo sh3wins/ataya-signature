@@ -66,7 +66,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
 
         {q && (
           <p className="mt-8 text-sm text-muted" aria-live="polite">
-            {results.length ? `${results.length} ${results.length === 1 ? "dress" : "dresses"}` : "Nothing in the freezer by that name. Try a flavour."}
+            {results.length ? `${results.length} ${results.length === 1 ? "piece" : "pieces"}` : "Nothing in the freezer by that name. Try a flavour."}
           </p>
         )}
         <ul className="mt-4 divide-y divide-line">

@@ -15,7 +15,7 @@ export default function FlavoursPage() {
           </Link>
         </p>
         <p className="eyebrow rise mt-6 text-muted">
-          {chapterLabel(ICE_CREAM.chapter)} · {ICE_CREAM.name} · Four flavours, one freezer
+          {chapterLabel(ICE_CREAM.chapter)} · {ICE_CREAM.name} · Five flavours, one freezer
         </p>
         <h1 className="rise mt-4 font-display text-display" style={{ animationDelay: "80ms" }}>
           The <span className="italic">Flavours</span>

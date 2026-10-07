@@ -52,7 +52,7 @@ export default function Home() {
             Everyone&apos;s favourite <span className="italic">flavours</span>
           </h2>
           <Link href="/dresses" className="eyebrow shrink-0 underline-offset-4 hover:underline">
-            All dresses →
+            Shop everything →
           </Link>
         </div>
         <ul className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 sm:px-8 [scrollbar-width:thin]">

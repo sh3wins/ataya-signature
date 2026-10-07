@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ProductMedia from "./ProductMedia";
 import { flavourMap } from "@/lib/flavours";
-import { formatKES, isSoldOut, type Product } from "@/lib/products";
+import { cutLabel, formatKES, isSoldOut, type Product } from "@/lib/products";
 
 /** Practical product card: front view, back view on hover, clear price and stock. */
 export default function ProductCard({ product, tall = false, className = "" }: { product: Product; tall?: boolean; className?: string }) {
@@ -27,7 +27,7 @@ export default function ProductCard({ product, tall = false, className = "" }: {
       <div className="mt-3 flex items-start justify-between gap-3">
         <div>
           <h3 className="font-display text-xl leading-tight group-hover:underline group-hover:underline-offset-4">{product.name}</h3>
-          <p className="mt-0.5 text-xs uppercase tracking-[0.16em] text-muted">{f.name} · {product.silhouette}</p>
+          <p className="mt-0.5 text-xs uppercase tracking-[0.16em] text-muted">{f.name} · {cutLabel(product)}</p>
         </div>
         <p className={`shrink-0 text-sm ${soldOut ? "text-muted" : ""}`}>{formatKES(product.price)}</p>
       </div>

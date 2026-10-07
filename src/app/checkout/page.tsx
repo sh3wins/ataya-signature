@@ -61,7 +61,7 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-2xl px-5 pb-24 pt-36 text-center">
         <h1 className="font-display text-5xl">Your scoop is empty.</h1>
         <ButtonLink href="/dresses" className="mt-8">
-          Browse dresses
+          Browse the shop
         </ButtonLink>
       </div>
     );

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import ProductCard from "./ProductCard";
 import { flavours, type FlavourSlug } from "@/lib/flavours";
-import { products, isSoldOut, type Silhouette } from "@/lib/products";
+import { CATEGORIES, categoryOf, products, isSoldOut, type Category, type Silhouette } from "@/lib/products";
 
 type Sort = "featured" | "fresh" | "price-asc" | "price-desc";
 
@@ -12,19 +12,25 @@ const silhouettes: Silhouette[] = ["mini", "midi", "maxi", "column", "slip", "ti
 /** The practical browsing grid: filter, sort, see what's in stock. */
 export default function DressBrowser({ initialSort = "featured", initialFlavour }: { initialSort?: Sort; initialFlavour?: FlavourSlug }) {
   const [flavour, setFlavour] = useState<FlavourSlug | "all">(initialFlavour ?? "all");
+  const [kind, setKind] = useState<Category | "all">("all");
   const [sil, setSil] = useState<Silhouette | "all">("all");
   const [sort, setSort] = useState<Sort>(initialSort);
   const [hideSoldOut, setHideSoldOut] = useState(false);
 
   const list = useMemo(() => {
     let l = products.filter(
-      (p) => (flavour === "all" || p.flavour === flavour) && (sil === "all" || p.silhouette === sil) && (!hideSoldOut || !isSoldOut(p)),
+      (p) =>
+        (flavour === "all" || p.flavour === flavour) &&
+        (kind === "all" || categoryOf(p) === kind) &&
+        // a shape (mini, midi...) only means something for dresses and skirts
+        (sil === "all" || (categoryOf(p) !== "top" && p.silhouette === sil)) &&
+        (!hideSoldOut || !isSoldOut(p)),
     );
     if (sort === "fresh") l = [...l].sort((a, b) => Number(!!b.fresh) - Number(!!a.fresh));
     if (sort === "price-asc") l = [...l].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") l = [...l].sort((a, b) => b.price - a.price);
     return l;
-  }, [flavour, sil, sort, hideSoldOut]);
+  }, [flavour, kind, sil, sort, hideSoldOut]);
 
   const chip = (on: boolean) =>
     `rounded-full border px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em] transition-colors ${
@@ -33,6 +39,16 @@ export default function DressBrowser({ initialSort = "featured", initialFlavour 
 
   return (
     <div>
+      <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label="Filter by kind of piece">
+        <button className={chip(kind === "all")} aria-pressed={kind === "all"} onClick={() => setKind("all")}>
+          Everything
+        </button>
+        {CATEGORIES.map((c) => (
+          <button key={c.id} className={chip(kind === c.id)} aria-pressed={kind === c.id} onClick={() => setKind(c.id)}>
+            {c.plural}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-col gap-5 border-b border-line pb-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by flavour">
           <button className={chip(flavour === "all")} aria-pressed={flavour === "all"} onClick={() => setFlavour("all")}>
@@ -74,10 +90,10 @@ export default function DressBrowser({ initialSort = "featured", initialFlavour 
       </div>
 
       <p className="mt-6 text-sm text-muted" aria-live="polite">
-        {list.length} {list.length === 1 ? "dress" : "dresses"}
+        {list.length} {list.length === 1 ? "piece" : "pieces"}
       </p>
       {list.length === 0 ? (
-        <p className="py-24 text-center font-display text-3xl">Nothing in that flavour yet. Try another scoop.</p>
+        <p className="py-24 text-center font-display text-3xl">Nothing like that in the freezer yet. Try another scoop.</p>
       ) : (
         <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-12 md:grid-cols-3 xl:grid-cols-4">
           {list.map((p) => (

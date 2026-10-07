@@ -36,6 +36,7 @@ export default function ProductMedia({
       flavour={product.flavour}
       silhouette={product.silhouette}
       detail={product.detail}
+      garment={product.category}
       tone={product.tone}
       view={view === "back" ? "back" : "front"}
       sway={sway}

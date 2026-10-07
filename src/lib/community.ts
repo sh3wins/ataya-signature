@@ -78,7 +78,7 @@ export const samplePosts: Post[] = [
     reactions: { strawberry: 29, avocado: 12, orange: 5, blueberry: 2 },
     ago: "2 d",
     comments: [
-      { id: "welcome-1", author: "Njeri W.", text: "Mango. It has to be mango.", ago: "2 d" },
+      { id: "welcome-1", author: "Njeri W.", text: "Raspberry ripple. It has to be raspberry ripple.", ago: "2 d" },
       { id: "welcome-2", author: STUDIO_NAME, studio: true, text: "Noted. Loudly.", ago: "1 d" },
     ],
   },
@@ -158,7 +158,7 @@ export interface PollOption {
 export const poll = {
   question: "Which flavour should we make next?",
   options: [
-    { id: "mango", label: "Mango", colour: "#F6C56B", votes: 64 },
+    { id: "raspberry", label: "Raspberry Ripple", colour: "#E0668A", votes: 64 },
     { id: "coconut", label: "Toasted Coconut", colour: "#E9DCC3", votes: 41 },
     { id: "passion", label: "Passion Fruit", colour: "#E9A64F", votes: 37 },
     { id: "lemon", label: "Lemon Sorbet", colour: "#F3EA9C", votes: 22 },

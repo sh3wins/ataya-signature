@@ -20,7 +20,7 @@ export default function ScoopPage() {
           <ScoopStack flavours={[]} />
           <p className="mt-8 font-display text-3xl">Nothing in your scoop yet.</p>
           <ButtonLink href="/dresses" className="mt-6">
-            Browse dresses
+            Browse the shop
           </ButtonLink>
         </div>
       ) : (

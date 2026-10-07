@@ -46,7 +46,7 @@ export default function Footer() {
           <p className="text-4xl">
             <Wordmark /> <Cherry />
           </p>
-          <p className="mt-6 max-w-xs text-sm text-paper/60">Dresses with a taste. Designed in Nairobi, made to be noticed.</p>
+          <p className="mt-6 max-w-xs text-sm text-paper/60">Clothes with a taste. Designed in Nairobi, made to be noticed.</p>
         </div>
         <div>
           <p className="eyebrow text-paper/50">Ice Cream Collection</p>
@@ -64,7 +64,7 @@ export default function Footer() {
           <p className="eyebrow text-paper/50">Explore</p>
           <ul className="mt-4 space-y-2 text-sm">
             <li><Link href="/collections" className="hover:underline">Collections</Link></li>
-            <li><Link href="/dresses" className="hover:underline">All dresses</Link></li>
+            <li><Link href="/dresses" className="hover:underline">Shop everything</Link></li>
             <li><Link href="/lookbook" className="hover:underline">Lookbook</Link></li>
             <li><Link href="/community" className="hover:underline">The Parlour (community)</Link></li>
             <li><Link href="/lab" className="hover:underline">The Flavour Lab</Link></li>

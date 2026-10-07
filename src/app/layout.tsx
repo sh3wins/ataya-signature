@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     default: "ATAYA SIGNATURE — Every dress has a taste",
     template: "%s · ATAYA SIGNATURE",
   },
-  description: "Ataya Signature makes playful, sophisticated dresses inspired by ice-cream flavours. Choose your flavour.",
+  description: "Ataya Signature makes playful, sophisticated dresses, skirts and tops inspired by ice-cream flavours. Choose your flavour.",
 };
 
 export const viewport: Viewport = {

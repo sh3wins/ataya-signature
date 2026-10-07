@@ -10,7 +10,8 @@ export type FlavourSlug =
   | "strawberry"
   | "vanilla"
   | "pistachio"
-  | "blueberry";
+  | "blueberry"
+  | "mango";
 
 export type Fleck = "seed" | "bean" | "chip" | "nut" | "swirl";
 
@@ -149,6 +150,26 @@ export const flavours: Flavour[] = [
     heroDress: "blueberry-cheesecake-tier",
     melt: { speed: 1.08, gloss: 1, shine: 110, thickness: 0.9, heaviness: 1, elastic: 0.5, drips: 8 },
     moment: "Best enjoyed slightly dreamy.",
+  },
+  {
+    slug: "mango",
+    name: "Mango",
+    colour: "var(--fl-mango)",
+    secondaryColour: "var(--fl-mango-deep)",
+    accent: "#FFD27A",
+    cream: "var(--fl-mango-cream)",
+    ink: "var(--fl-mango-ink)",
+    raw: { colour: "#F9CF9B", secondaryColour: "#C2570C", cream: "#FFF4E3" },
+    scoop: ["#FFDDA8", "#FBB04A", "#D98426"],
+    fleck: "swirl",
+    fleckColour: "#E07A1F",
+    collection: ICE_CREAM.name,
+    tagline: "Bright. Juicy. Impossible to ignore.",
+    description:
+      "Warm orange running into gold. Easy shapes that swing, made for afternoons that run late.",
+    heroDress: "mango-sorbet-wrap",
+    melt: { speed: 1.05, gloss: 0.9, shine: 80, thickness: 1.05, heaviness: 1, elastic: 0.4, drips: 7 },
+    moment: "Sunshine, churned.",
   },
 ];
 

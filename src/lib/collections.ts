@@ -27,7 +27,7 @@ export const collections: Collection[] = [
     status: "open",
     href: "/flavours",
     line: "Every dress has a taste.",
-    description: "Where it started. Dresses churned from strawberry, vanilla, pistachio and blueberry. Pick a flavour and let it melt.",
+    description: "Where it started. Dresses, skirts and tops in strawberry, vanilla, pistachio, blueberry and mango. Pick a flavour and let it melt.",
     colour: "var(--fl-strawberry)",
     ink: "var(--fl-strawberry-ink)",
   },

@@ -17,7 +17,7 @@ Then open http://localhost:3000
 | What | File |
 | --- | --- |
 | Flavours (colours, taglines, hero dress) | `src/lib/flavours.ts` |
-| Dresses (name, price in KES, sizes, stock) | `src/lib/products.ts` |
+| Dresses, skirts and tops (name, price in KES, sizes, stock) | `src/lib/products.ts` |
 | Flavour Lab mixes + Build Your Ataya matching | `src/lib/lab.ts` |
 | Design tokens (colours, type, easing) | `src/app/globals.css` |
 | The melt (soft liquid, WebGL) | `src/lib/liquid.ts` + `src/components/melt/playMelt.ts` |
@@ -43,6 +43,12 @@ The list lives in `src/lib/collections.ts` and shows on `/collections`.
 - To announce a collection, add it with `status: "soon"`. It appears as a "coming soon" card.
 - To open it, build its pages, then set `status: "open"` and its `href`.
 - Flavours and dresses carry the name of the collection they belong to (Ice Cream, for now).
+
+## Dresses, skirts and tops
+
+Every piece is in `src/lib/products.ts`. A piece is a dress unless it says `category: "skirt"`
+or `category: "top"`. The Shop page has a filter for each. Skirts and tops get their own drawing
+until real photos are added.
 
 ## Add a new flavour
 

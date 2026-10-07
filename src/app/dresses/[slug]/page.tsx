@@ -33,7 +33,7 @@ export default async function ProductPage(props: PageProps<"/dresses/[slug]">) {
   return (
     <div style={flavourVars(f)}>
       <nav aria-label="Breadcrumb" className="mx-auto max-w-[96rem] px-4 pt-24 text-xs text-muted sm:px-8">
-        <Link href="/dresses" className="hover:underline">Dresses</Link> <span aria-hidden>/</span>{" "}
+        <Link href="/dresses" className="hover:underline">Shop</Link> <span aria-hidden>/</span>{" "}
         <Link href={`/flavours/${f.slug}`} className="hover:underline">{f.name}</Link> <span aria-hidden>/</span>{" "}
         <span aria-current="page">{p.name}</span>
       </nav>
@@ -57,7 +57,7 @@ export default async function ProductPage(props: PageProps<"/dresses/[slug]">) {
           </InView>
           <InView className="relative md:col-span-6 md:col-start-7" delay={120}>
             <div className="relative grid aspect-square place-items-center rounded-full" style={{ background: f.cream }}>
-              <DressArt flavour={p.flavour} silhouette={p.silhouette} detail={p.detail} tone={p.tone} view="back" className="h-[92%] w-auto" title={`${p.name}, back`} />
+              <DressArt flavour={p.flavour} silhouette={p.silhouette} detail={p.detail} garment={p.category} tone={p.tone} view="back" className="h-[92%] w-auto" title={`${p.name}, back`} />
               <Scoop flavour={p.flavour} rich={false} cone className="absolute -bottom-4 right-6 h-40 w-auto rotate-[14deg]" />
             </div>
           </InView>

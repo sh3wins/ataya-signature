@@ -29,6 +29,10 @@ export default function FlavourWorld({ flavour, className = "" }: { flavour: Fla
         <div className="absolute inset-0" style={{ background: `radial-gradient(50% 50% at 25% 30%, ${f.accent}aa, transparent 70%), radial-gradient(50% 60% at 80% 70%, ${alpha(f.cream, 0.53)}, transparent 70%)` }} />
       )}
 
+      {flavour === "mango" && (
+        <div className="absolute inset-0" style={{ background: `radial-gradient(55% 50% at 78% 22%, ${f.accent}77, transparent 70%), radial-gradient(55% 55% at 20% 85%, ${alpha(f.cream, 0.7)}, transparent 70%)` }} />
+      )}
+
       {/* the architecture every room shares */}
       <div
         className="absolute left-1/2 top-[15%] h-[95%] w-[min(86vw,38rem)] -translate-x-1/2 rounded-t-full md:left-[66%]"

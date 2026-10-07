@@ -161,12 +161,12 @@ export default function PostCard({
           style={{ background: dressFlavour.colour, color: dressFlavour.ink }}
         >
           <span className="grid h-28 w-24 shrink-0 place-items-center rounded-xl" style={{ background: dressFlavour.cream }}>
-            <DressArt flavour={dress.flavour} silhouette={dress.silhouette} detail={dress.detail} tone={dress.tone} sway={false} shadow={false} className="h-[92%] w-auto" />
+            <DressArt flavour={dress.flavour} silhouette={dress.silhouette} detail={dress.detail} garment={dress.category} tone={dress.tone} sway={false} shadow={false} className="h-[92%] w-auto" />
           </span>
           <span className="min-w-0">
             <span className="eyebrow block opacity-70">{post.studio ? "On the table" : "Wearing"}</span>
             <span className="mt-1 block font-display text-2xl leading-tight group-hover:underline group-hover:underline-offset-4">{dress.name}</span>
-            <span className="mt-1 block text-xs uppercase tracking-[0.16em] opacity-70">See the dress →</span>
+            <span className="mt-1 block text-xs uppercase tracking-[0.16em] opacity-70">See it →</span>
           </span>
         </Link>
       )}

@@ -23,7 +23,7 @@ export default function ScoopLines({ onNavigate }: { onNavigate?: () => void }) 
               style={{ background: f.colour }}
               aria-label={i.product.name}
             >
-              <DressArt flavour={i.product.flavour} silhouette={i.product.silhouette} detail={i.product.detail} tone={i.product.tone} sway={false} shadow={false} className="h-24" />
+              <DressArt flavour={i.product.flavour} silhouette={i.product.silhouette} detail={i.product.detail} garment={i.product.category} tone={i.product.tone} sway={false} shadow={false} className="h-24" />
             </Link>
             <div className="flex min-w-0 flex-1 flex-col">
               <div className="flex items-start justify-between gap-3">

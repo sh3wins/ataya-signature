@@ -81,7 +81,7 @@ export default function CollectionsPage() {
                   <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold uppercase tracking-[0.2em]">
                     <span className="underline underline-offset-4">Step inside →</span>
                     <span className="opacity-60">
-                      {flavours.length} flavours · {products.length} dresses
+                      {flavours.length} flavours · {products.length} pieces
                     </span>
                   </p>
                 ) : (

@@ -30,6 +30,7 @@ interface Scene {
 const scenes: Scene[] = [
   { time: "08:00", title: "Vanilla, first thing", line: "Quiet silk before anyone else is up.", flavour: "vanilla", dress: "vanilla-bean-slip" },
   { time: "12:30", title: "Pistachio lunch", line: "A long table, a longer hemline.", flavour: "pistachio", dress: "pistachio-crema-midi" },
+  { time: "14:30", title: "Mango afternoon", line: "The sun at its sweetest.", flavour: "mango", dress: "mango-sorbet-wrap" },
   { time: "16:00", title: "Strawberry hour", line: "Sweet. Dramatic. A little unnecessary.", flavour: "strawberry", dress: "strawberry-swirl" },
   { time: "19:45", title: "Blueberry dusk", line: "The light turns lilac. So do you.", flavour: "blueberry", dress: "blueberry-cheesecake-tier" },
 ];
