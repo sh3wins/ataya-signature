@@ -124,7 +124,7 @@ export default function Home() {
           </Link>
           <p className="mt-6 text-muted">
             <Link href="/lookbook" className="underline underline-offset-4">
-              Step into the Ataya world
+              Step into the Ataya universe
             </Link>
           </p>
         </InView>

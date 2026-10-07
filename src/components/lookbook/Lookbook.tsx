@@ -130,7 +130,7 @@ export default function Lookbook() {
       <div className="lb-stage relative h-dvh overflow-hidden bg-cream motion-reduce:h-auto motion-reduce:overflow-visible">
         {/* intro */}
         <div className="lb-intro absolute inset-0 z-0 grid place-content-center px-5 text-center motion-reduce:static motion-reduce:py-40">
-          <p className="eyebrow text-muted">The Ataya World</p>
+          <p className="eyebrow text-muted">The Ataya Universe</p>
           <h1 className="mt-4 font-display text-display">
             {["A day", "at Ataya"].map((w, i) => (
               <span key={w} className="block overflow-hidden">
