@@ -1,0 +1,26 @@
+{
+  "strawberry": {
+    "bits": false,
+    "bulge": [
+      { "src": "/reactions/fx/strawberry-heart-l.png", "x": 23.5, "y": 36.5, "w": 23, "h": 21, "pop": 1.75 },
+      { "src": "/reactions/fx/strawberry-heart-r.png", "x": 52.5, "y": 36.5, "w": 23, "h": 21, "pop": 1.75 }
+    ]
+  },
+  "blueberry": {
+    "bulge": [
+      { "src": "/reactions/fx/blueberry-eye-l.png", "x": 24.5, "y": 30.5, "w": 21, "h": 21.5, "pop": 1.5 },
+      { "src": "/reactions/fx/blueberry-eye-r.png", "x": 54.5, "y": 30.5, "w": 21, "h": 21.5, "pop": 1.5 }
+    ]
+  },
+  "orange": {
+    "swell": [
+      { "src": "/reactions/fx/orange-tear-l.png", "x": 12.5, "y": 39.5, "w": 17.5, "h": 14, "origin": "90% 15%" },
+      { "src": "/reactions/fx/orange-tear-r.png", "x": 69.5, "y": 39.5, "w": 18.5, "h": 14, "origin": "10% 15%" }
+    ],
+    "drops": { "src": "/reactions/fx/orange-drop.png", "w": 6.5, "from": [ { "x": 16.5, "y": 50 }, { "x": 77.5, "y": 50 } ] }
+  },
+  "mango": {
+    "bits": false,
+    "drops": { "src": "/reactions/fx/mango-drop.png", "w": 6.5, "from": [ { "x": 22.5, "y": 58 }, { "x": 69.5, "y": 59 } ] }
+  }
+}
