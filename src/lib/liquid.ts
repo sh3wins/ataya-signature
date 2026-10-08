@@ -539,6 +539,12 @@ float noise(vec2 p){
   return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y);
 }
 
+// slow folds in thick cream: a warped height field for the open surface
+float fold(vec2 p){
+  vec2 w = p + 1.7*vec2(noise(p*0.6 + vec2(0.0, u_time*0.07)), noise(p*0.6 + vec2(7.3, -u_time*0.06)));
+  return noise(w) + 0.45*noise(w*2.3 + 3.1);
+}
+
 // thickness of ice cream at a point (field minus what has drained away)
 float S(vec2 uv){
   vec4 f = texture2D(u_field, uv);
@@ -565,6 +571,12 @@ void main(){
   // edges left by the liquid pulling back are soft and satiny
   float hEdge = smoothstep(0.01, 0.08, HOLES(v_uv));
   vec3 n = normalize(vec3(-grad*64.0*body + outward*rim*(0.75 - 0.4*hEdge), 1.0));
+  // the open surface is not flat: it lies in soft, glossy folds
+  float open = (1.0 - body) * a;
+  vec2 fp = gl_FragCoord.xy / 250.0;
+  float f0 = fold(fp);
+  vec2 fg = vec2(fold(fp + vec2(0.07, 0.0)) - f0, fold(fp + vec2(0.0, 0.07)) - f0) / 0.07;
+  n = normalize(vec3(n.xy - fg*0.2*open, n.z));
 
   vec3 L = normalize(vec3(-0.45, 0.6, 0.66));
   float diff = clamp(dot(n, L), 0.0, 1.0);
@@ -595,7 +607,10 @@ void main(){
   // a slow, broad sheen drifting across the pool
   float band = sin((v_uv.x*0.8 + v_uv.y*0.6) * 3.2 - u_time*0.5);
   col += u_gloss * 0.045 * smoothstep(0.6, 1.0, band) * (1.0 - body);
-  col += vec3(spec + sheen + wet);
+  // folds: shaded troughs, and a hard wet glint along each crest
+  col *= 1.0 - open * 0.07 * (1.0 - smoothstep(0.55, 0.95, f0));
+  float glint = pow(nh, 90.0) * (0.14 + 0.3*u_gloss) * open;
+  col += vec3(min(spec + sheen*(1.0 - 0.7*open) + wet + glint, 0.55));
 
   // soft shadow the ice cream casts on the page below it
   float above = S(v_uv + vec2(u_texel.x*2.0, u_texel.y*7.0));

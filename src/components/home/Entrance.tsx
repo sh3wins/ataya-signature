@@ -17,7 +17,13 @@ type Stage = "choose" | "melting" | "revealed";
  * THE OPENING EXPERIENCE
  * ATAYA → a scoop drops in → CHOOSE YOUR FLAVOUR → melt → dress.
  */
-export default function Entrance() {
+export default function Entrance({
+  pictures = {},
+  splashes = {},
+}: {
+  pictures?: Record<string, string>;
+  splashes?: Record<string, string>;
+}) {
   const root = useRef<HTMLElement>(null);
   const scoopWrap = useRef<HTMLDivElement>(null);
   const scoopInner = useRef<HTMLButtonElement>(null);
@@ -89,6 +95,7 @@ export default function Entrance() {
       await playMelt({
         flavour: f,
         from: scoopInner.current,
+        splash: splashes[f],
         reducedMotion,
         onCovered: () => {
           setStage("revealed");
@@ -96,7 +103,7 @@ export default function Entrance() {
         onDone: () => setRevealed(true),
       });
     },
-    [stage, play, reducedMotion],
+    [stage, play, reducedMotion, splashes],
   );
 
   const reset = useCallback(() => {
@@ -109,9 +116,16 @@ export default function Entrance() {
 
   useEffect(() => () => clearTimeout(warmTimer.current), []);
 
+  // have the splash ready before the scoop is tapped
+  useEffect(() => {
+    const src = splashes[shown];
+    if (src) new Image().src = src;
+  }, [shown, splashes]);
+
   if (stage === "revealed" && chosen) return <DressReveal flavour={chosen} ready={revealed} onChooseAgain={reset} />;
 
   const f = flavourMap[shown];
+  const photo = pictures[shown];
   const bg = `color-mix(in srgb, var(--color-cream), ${f.colour} ${stage === "melting" ? 75 : 40}%)`;
 
   return (
@@ -162,15 +176,27 @@ export default function Entrance() {
             aria-label={`Melt the ${f.name} scoop`}
             data-cursor="melt"
             data-flavour-colour={f.colour}
-            className="block rounded-full"
+            className="relative block rounded-full"
           >
             <Scoop
               key={shown}
               flavour={shown}
               dripping={warm}
               cone
-              className="h-[min(62vw,19rem)] w-auto drop-shadow-[0_24px_30px_rgba(0,0,0,0.10)] sm:h-[min(42vh,24rem)]"
+              className={`h-[min(62vw,19rem)] w-auto sm:h-[min(42vh,24rem)] ${photo ? "opacity-0" : "drop-shadow-[0_24px_30px_rgba(0,0,0,0.10)]"}`}
             />
+            {photo && (
+              // the photo sits exactly over the drawn scoop, which stays in
+              // place (invisible) so the melt knows where the ice cream is
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={photo}
+                src={photo}
+                alt=""
+                draggable={false}
+                className="scoop-photo pointer-events-none absolute inset-0 h-full w-full select-none object-contain drop-shadow-[0_24px_30px_rgba(0,0,0,0.16)]"
+              />
+            )}
           </button>
         </div>
         <div aria-hidden className="ent-shadow -mt-1 h-3 w-20 rounded-[50%] bg-black/20 blur-[6px]" />

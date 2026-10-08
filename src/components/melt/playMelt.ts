@@ -26,6 +26,8 @@ export interface PlayMeltOptions {
   flavour: FlavourSlug;
   /** Element containing the chosen scoop (its <svg data-scoop-vb>) */
   from?: Element | null;
+  /** A cut-out splash picture that bursts out of the scoop as it gives way */
+  splash?: string;
   onCovered: () => void | Promise<void>;
   /** Called when the scoop has been handed over to the melt layer */
   onTakeover?: () => void;
@@ -81,9 +83,70 @@ async function dissolve(colour: string, onCovered: () => void | Promise<void>) {
   veil.remove();
 }
 
+/**
+ * THE SPLASH: thick cream is thrown outwards from the scoop until it has
+ * hit the whole screen. The cut-out splash flies ahead; solid liquid (the
+ * canvas, opened by a growing round mask) fills in behind it.
+ */
+async function splashCover(src: string, x: number, y: number, canvas: HTMLCanvasElement, draw: () => void, tempo: number) {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const size = Math.max(W, H) * 1.3;
+  const reach = Math.hypot(Math.max(x, W - x), Math.max(y, H - y)) + 140;
+  const layers = [
+    { k: 1, from: -30, to: 6 },
+    { k: 0.6, from: 118, to: 164 },
+  ].map((l) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    Object.assign(img.style, {
+      position: "fixed",
+      left: `${x - size / 2}px`,
+      top: `${y - size / 2}px`,
+      width: `${size}px`,
+      height: `${size}px`,
+      zIndex: "46",
+      pointerEvents: "none",
+      willChange: "transform",
+      transform: "scale(0)",
+    });
+    document.body.appendChild(img);
+    return { img, ...l };
+  });
+  await Promise.all(layers.map((l) => l.img.decode().catch(() => {})));
+
+  const st = { grow: 0.04, flood: 0, turn: 0 };
+  const paint = () => {
+    layers.forEach((l) => {
+      l.img.style.transform = `rotate(${l.from + (l.to - l.from) * st.turn}deg) scale(${st.grow * l.k})`;
+    });
+    // the solid liquid stays inside the thick heart of the splash, then overtakes it
+    const r = 0.085 * size * st.grow + st.flood * reach;
+    const mask = `radial-gradient(circle at ${x}px ${y}px, #000 ${Math.max(0, r - 44)}px, transparent ${r}px)`;
+    canvas.style.maskImage = mask;
+    canvas.style.webkitMaskImage = mask;
+    draw();
+  };
+  paint();
+  canvas.style.opacity = "1";
+  await gsap
+    .timeline({ onUpdate: paint })
+    .to(st, { grow: 1, duration: 0.6 / tempo, ease: "expo.out" }, 0)
+    .to(st, { turn: 1, duration: 1.55 / tempo, ease: "power1.out" }, 0)
+    .to(st, { grow: 2.3, duration: 0.95 / tempo, ease: "power2.in" }, 0.6 / tempo)
+    .to(st, { flood: 1, duration: 0.8 / tempo, ease: "power2.in" }, 0.75 / tempo)
+    .then();
+  canvas.style.maskImage = "";
+  canvas.style.webkitMaskImage = "";
+  layers.forEach((l) => l.img.remove());
+}
+
 export async function playMelt({
   flavour,
   from,
+  splash,
   onCovered,
   onTakeover,
   onDone,
@@ -130,33 +193,62 @@ export async function playMelt({
     return finish();
   }
 
-  const sim = new MeltSim(domeOf(from), gl.W, gl.H, phys, flavour.length * 31 + 7);
+  const dome = domeOf(from);
+  const sim = new MeltSim(dome, gl.W, gl.H, phys, flavour.length * 31 + 7);
   const onResize = () => gl?.resize();
   window.addEventListener("resize", onResize);
   const t0 = performance.now();
   const time = () => (performance.now() - t0) / 1000;
   const look = { colours: palette, gloss: phys.gloss, shine: phys.shine };
 
-  // The first frame is the scoop itself, so the hand-over is seamless
-  const first = sim.melt(0, 0);
-  gl.render(first.blobs, { ...look, flood: first.flood, pool: first.pool, time: 0 });
-  // hide the SVG ice cream (not the cone): the liquid layer now IS the scoop
-  const domes = Array.from(from?.querySelectorAll<SVGGElement>(".scoop-dome") ?? []);
-  domes.forEach((d) => (d.style.opacity = "0"));
-  onTakeover?.();
-
-  // THE MELT — slower, heavier flavours take their time
-  const meltDuration = (3.5 / Math.max(0.6, phys.speed)) / tempo;
   const state = { p: 0, q: 0 };
-  await gsap.to(state, {
-    p: 1,
-    duration: meltDuration,
-    ease: "none",
-    onUpdate: () => {
-      const m = sim.melt(state.p, time());
-      gl!.render(m.blobs, { ...look, flood: m.flood, pool: m.pool, time: time() });
-    },
-  });
+  const domes = Array.from(from?.querySelectorAll<SVGGElement>(".scoop-dome") ?? []);
+  const photos = Array.from(from?.querySelectorAll<HTMLImageElement>(".scoop-photo") ?? []);
+
+  if (splash) {
+    // THE SPLASH — the scoop bursts and the cream hits the whole screen
+    const full = sim.melt(1, 0);
+    canvas.style.opacity = "0";
+    onTakeover?.();
+    await splashCover(
+      splash,
+      dome.left + 100 * dome.s,
+      dome.top + 74 * dome.s,
+      canvas,
+      () => gl!.render(full.blobs, { ...look, flood: full.flood, pool: full.pool, time: time() }),
+      tempo,
+    );
+  } else {
+    // The first frame is the scoop itself, so the hand-over is seamless
+    const first = sim.melt(0, 0);
+    gl.render(first.blobs, { ...look, flood: first.flood, pool: first.pool, time: 0 });
+    // hide the SVG ice cream (not the cone): the liquid layer now IS the scoop
+    domes.forEach((d) => (d.style.opacity = "0"));
+    // a photo scoop: the liquid fades in over it, then the photo keeps only
+    // its cone (the ice cream part is now the liquid layer)
+    if (photos.length) {
+      canvas.style.opacity = "0";
+      await gsap.to(canvas, { opacity: 1, duration: 0.28, ease: "power1.out" });
+      const mask = "linear-gradient(to bottom, transparent 33%, #000 42%)";
+      photos.forEach((ph) => {
+        ph.style.maskImage = mask;
+        ph.style.webkitMaskImage = mask;
+      });
+    }
+    onTakeover?.();
+
+    // THE MELT — slower, heavier flavours take their time
+    const meltDuration = (3.5 / Math.max(0.6, phys.speed)) / tempo;
+    await gsap.to(state, {
+      p: 1,
+      duration: meltDuration,
+      ease: "none",
+      onUpdate: () => {
+        const m = sim.melt(state.p, time());
+        gl!.render(m.blobs, { ...look, flood: m.flood, pool: m.pool, time: time() });
+      },
+    });
+  }
 
   // Swap the scene underneath while the screen is covered
   await onCovered();
@@ -178,6 +270,10 @@ export async function playMelt({
 
   window.removeEventListener("resize", onResize);
   domes.forEach((d) => (d.style.opacity = ""));
+  photos.forEach((ph) => {
+    ph.style.maskImage = "";
+    ph.style.webkitMaskImage = "";
+  });
   gl.destroy();
   canvas.remove();
   finish();

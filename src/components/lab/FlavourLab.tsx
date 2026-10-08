@@ -53,6 +53,20 @@ function MixedScoop({ a, b, className }: { a: FlavourSlug; b: FlavourSlug; class
   );
 }
 
+/** A cone for the lab: the photo when there is one, the drawn scoop otherwise */
+function LabScoop({ flavour, photo, className }: { flavour: FlavourSlug; photo?: string; className: string }) {
+  const size = "h-64 w-auto md:h-80";
+  if (!photo) return <Scoop flavour={flavour} cone rich={false} className={`${className} ${size}`} />;
+  return (
+    <span className={`${className} relative inline-block`}>
+      {/* kept (invisible) so the melt knows where the ice cream is */}
+      <Scoop flavour={flavour} cone rich={false} className={`${size} opacity-0`} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={photo} alt="" draggable={false} className="scoop-photo pointer-events-none absolute inset-0 h-full w-full select-none object-contain" />
+    </span>
+  );
+}
+
 function Picker({ label, value, other, onPick }: { label: string; value: FlavourSlug | null; other: FlavourSlug | null; onPick: (f: FlavourSlug) => void }) {
   return (
     <fieldset>
@@ -81,7 +95,17 @@ function Picker({ label, value, other, onPick }: { label: string; value: Flavour
  * THE FLAVOUR LAB — pick two flavours and see what happens.
  * `resolver` is swappable: today curated, tomorrow AI.
  */
-export default function FlavourLab({ resolver = curatedResolver }: { resolver?: MixResolver }) {
+export default function FlavourLab({
+  resolver = curatedResolver,
+  pictures = {},
+  mixes = {},
+  splashes = {},
+}: {
+  resolver?: MixResolver;
+  pictures?: Record<string, string>;
+  mixes?: Record<string, string>;
+  splashes?: Record<string, string>;
+}) {
   const [a, setA] = useState<FlavourSlug | null>("strawberry");
   const [b, setB] = useState<FlavourSlug | null>("vanilla");
   const [mix, setMix] = useState<Mix | null>(null);
@@ -112,6 +136,7 @@ export default function FlavourLab({ resolver = curatedResolver }: { resolver?: 
     await playMelt({
       flavour: a,
       from: q ? q(".lab-b-wrap")[0] : null,
+      splash: splashes[a],
       reducedMotion,
       tempo: 1.35,
       colours: { light: mixColour(A.scoop[0], B.scoop[0], 0.5), mid: A.scoop[1], deep: A.scoop[2], swirl: B.scoop[1] },
@@ -168,11 +193,11 @@ export default function FlavourLab({ resolver = curatedResolver }: { resolver?: 
           {!mix ? (
             <>
               <div className="flex items-end justify-center gap-2 md:col-span-2">
-                {a && <Scoop flavour={a} cone rich={false} className="lab-a h-64 w-auto md:h-80" />}
+                {a && <LabScoop flavour={a} photo={pictures[a]} className="lab-a" />}
                 <span className="lab-plus font-display text-6xl text-paper/40" aria-hidden>+</span>
                 {b && (
                   <div className="lab-b-wrap">
-                    <Scoop flavour={b} cone rich={false} className="lab-b h-64 w-auto md:h-80" />
+                    <LabScoop flavour={b} photo={pictures[b]} className="lab-b" />
                   </div>
                 )}
               </div>
@@ -185,7 +210,12 @@ export default function FlavourLab({ resolver = curatedResolver }: { resolver?: 
           ) : (
             <>
               <div data-melt-focus className="flex items-end justify-center gap-4">
-                <MixedScoop a={mix.a} b={mix.b} className="lab-mixed h-72 w-auto md:h-96" />
+                {mixes[`${mix.a}-${mix.b}`] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={mixes[`${mix.a}-${mix.b}`]} alt="" className="lab-mixed h-72 w-auto md:h-96" />
+                ) : (
+                  <MixedScoop a={mix.a} b={mix.b} className="lab-mixed h-72 w-auto md:h-96" />
+                )}
                 {look && (
                   <DressArt flavour={look.flavour} silhouette={look.silhouette} detail={look.detail} tone={look.tone} className="lab-mixed h-80 w-auto md:h-[28rem]" title={look.name} />
                 )}

@@ -28,3 +28,37 @@ export function flavourHeroMedia(slug: string): HeroMedia {
     poster: find(slug, ["jpg", "jpeg", "png", "webp"]),
   };
 }
+
+/**
+ * Photo-real scoops for the opening screen. Same idea as the films:
+ * drop a cut-out picture (transparent background, 200:330 frame, the cone
+ * upright and centred) in /public/scoops/ named after the flavour.
+ *
+ *   public/scoops/strawberry.png   (png or webp)
+ *
+ * A flavour with no picture keeps its drawn scoop.
+ */
+export function scoopPictures(): Record<string, string> {
+  return picturesIn("scoops");
+}
+
+/** The splash that bursts out of the scoop when it is tapped: public/splash/<flavour>.webp */
+export function splashPictures(): Record<string, string> {
+  return picturesIn("splash");
+}
+
+/** Two flavours swirled on one cone, for the Flavour Lab: public/mix/<first>-<second>.webp */
+export function mixPictures(): Record<string, string> {
+  return picturesIn("mix");
+}
+
+function picturesIn(folder: string): Record<string, string> {
+  const dir = path.join(process.cwd(), "public", folder);
+  const out: Record<string, string> = {};
+  if (!fs.existsSync(dir)) return out;
+  for (const file of fs.readdirSync(dir)) {
+    const m = /^([a-z-]+)\.(png|webp)$/.exec(file);
+    if (m) out[m[1]] = `/${folder}/${file}`;
+  }
+  return out;
+}

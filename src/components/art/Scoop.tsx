@@ -22,6 +22,8 @@ export const SCOOP_PATH = (() => {
   return d + " Z";
 })();
 
+const CONE_PATH = "M 34 112 L 166 112 L 104 318 Q 100 326 96 318 Z";
+
 const DRIPS = [
   "M 46 124 C 44 136 42 150 46 156 C 50 162 56 158 55 150 C 54 142 54 134 56 128 Z",
   "M 118 128 C 116 142 116 166 121 172 C 126 178 132 172 130 162 C 128 150 128 140 130 130 Z",
@@ -118,35 +120,71 @@ export default function Scoop({
           <stop offset="0" stopColor="#000" stopOpacity="0.3" />
           <stop offset="1" stopColor="#000" stopOpacity="0" />
         </radialGradient>
-        <filter id={g("tex")} x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency={rich ? 0.045 : 0.06} numOctaves="3" seed="7" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale={rich ? 3 : 2} xChannelSelector="R" yChannelSelector="G" result="shape" />
-          {rich ? (
-            <>
-              <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="11" result="bump" />
-              <feDiffuseLighting in="bump" surfaceScale="0.6" lightingColor="#fff" diffuseConstant="1" result="lit">
-                <feDistantLight azimuth="225" elevation="55" />
-              </feDiffuseLighting>
-              <feComposite in="shape" in2="lit" operator="arithmetic" k1="0.32" k2="0.74" k3="0" k4="0" />
-            </>
-          ) : null}
+        {rich ? (
+          /* 3D: the shape's own silhouette becomes a height map (a dome with
+             churned ridges), which is then lit from the top left */
+          <filter id={g("tex")} x="-8%" y="-8%" width="116%" height="116%" colorInterpolationFilters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="wob" />
+            <feDisplacementMap in="SourceGraphic" in2="wob" scale="3" xChannelSelector="R" yChannelSelector="G" result="shape" />
+            <feColorMatrix in="shape" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" result="a" />
+            <feGaussianBlur in="a" stdDeviation="4" result="b1" />
+            <feGaussianBlur in="a" stdDeviation="13" result="b2" />
+            <feGaussianBlur in="a" stdDeviation="30" result="b3" />
+            <feComposite in="b1" in2="b2" operator="arithmetic" k1="0" k2="0.16" k3="0.3" k4="0" result="h12" />
+            <feComposite in="h12" in2="b3" operator="arithmetic" k1="0" k2="1" k3="0.34" k4="0" result="dome" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.03 0.055" numOctaves="3" seed="23" result="churn" />
+            <feColorMatrix in="churn" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" result="churnA" />
+            <feComposite in="dome" in2="churnA" operator="arithmetic" k1="0" k2="1" k3="0.17" k4="0" result="height" />
+            <feDiffuseLighting in="height" surfaceScale="30" diffuseConstant="1" lightingColor="#fff" result="lit0">
+              <feDistantLight azimuth="228" elevation="58" />
+            </feDiffuseLighting>
+            <feGaussianBlur in="lit0" stdDeviation="1.3" result="lit" />
+            <feComposite in="shape" in2="lit" operator="arithmetic" k1="0.78" k2="0.4" k3="0" k4="0" result="col" />
+            <feSpecularLighting in="height" surfaceScale="30" specularConstant="0.2" specularExponent="18" lightingColor="#fff" result="spec0">
+              <feDistantLight azimuth="228" elevation="62" />
+            </feSpecularLighting>
+            <feGaussianBlur in="spec0" stdDeviation="1.6" result="spec" />
+            <feComposite in="spec" in2="col" operator="arithmetic" k1="0" k2="0.8" k3="1" k4="0" result="shiny" />
+            <feComposite in="shiny" in2="shape" operator="in" />
+          </filter>
+        ) : (
+          <filter id={g("tex")} x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="7" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        )}
+        <filter id={g("emboss")} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+          <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="lum" />
+          <feGaussianBlur in="lum" stdDeviation="0.9" result="hm" />
+          <feDiffuseLighting in="hm" surfaceScale="7" diffuseConstant="1" lightingColor="#fff" result="lit">
+            <feDistantLight azimuth="228" elevation="50" />
+          </feDiffuseLighting>
+          <feComposite in="SourceGraphic" in2="lit" operator="arithmetic" k1="0.7" k2="0.44" k3="0" k4="0" result="col" />
+          <feComposite in="col" in2="SourceGraphic" operator="in" />
         </filter>
       </defs>
 
       {shadow && !cone && <ellipse cx="100" cy="196" rx="70" ry="9" fill={`url(#${g("shadow")})`} />}
       {cone && (
         <g>
-          <pattern id={g("waffle")} width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="14" height="14" fill="#DDAE6C" />
-            <path d="M0 0 H14 M0 0 V14" stroke="#B5813F" strokeWidth="2.2" />
+          <pattern id={g("waffle")} width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(45) skewX(-8)">
+            <rect width="15" height="15" fill="#DDAE6C" />
+            <rect x="2.4" y="2.4" width="10.2" height="10.2" rx="1.6" fill="#CF9C58" />
+            <path d="M0 0 H15 M0 0 V15" stroke="#EDC88A" strokeWidth="3" />
           </pattern>
           <linearGradient id={g("coneShade")} x1="0" x2="1">
-            <stop offset="0" stopColor="#5a3510" stopOpacity="0.35" />
-            <stop offset="0.4" stopColor="#fff" stopOpacity="0.12" />
-            <stop offset="1" stopColor="#5a3510" stopOpacity="0.45" />
+            <stop offset="0" stopColor="#4a2a0c" stopOpacity="0.5" />
+            <stop offset="0.3" stopColor="#fff" stopOpacity="0.2" />
+            <stop offset="0.52" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#3d2209" stopOpacity="0.68" />
           </linearGradient>
-          <path d="M 34 112 L 166 112 L 104 318 Q 100 326 96 318 Z" fill={`url(#${g("waffle")})`} />
-          <path d="M 34 112 L 166 112 L 104 318 Q 100 326 96 318 Z" fill={`url(#${g("coneShade")})`} />
+          <linearGradient id={g("coneTop")} x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#2e1806" stopOpacity="0.6" />
+            <stop offset="0.24" stopColor="#2e1806" stopOpacity="0" />
+          </linearGradient>
+          <path d={CONE_PATH} fill={`url(#${g("waffle")})`} filter={`url(#${g("emboss")})`} />
+          <path d={CONE_PATH} fill={`url(#${g("coneShade")})`} />
+          <path d={CONE_PATH} fill={`url(#${g("coneTop")})`} />
         </g>
       )}
 
@@ -161,8 +199,8 @@ export default function Scoop({
       </g>
 
       {/* Gloss */}
-      <ellipse cx="70" cy="50" rx="30" ry="18" fill={`url(#${g("gloss")})`} transform="rotate(-28 70 50)" />
-      <ellipse cx="62" cy="44" rx="6" ry="3.5" fill="#fff" opacity="0.55" transform="rotate(-28 62 44)" />
+      <ellipse cx="70" cy="50" rx="30" ry="18" fill={`url(#${g("gloss")})`} opacity={rich ? 0.3 : 1} transform="rotate(-28 70 50)" />
+      <ellipse cx="62" cy="44" rx="6" ry="3.5" fill="#fff" opacity={rich ? 0.4 : 0.55} transform="rotate(-28 62 44)" />
       <path d="M 120 158 C 121 164 124 168 126 166" stroke="#fff" strokeOpacity="0.55" strokeWidth="1.6" fill="none" strokeLinecap="round" />
       <path d="M 48 142 C 48 148 50 152 52 150" stroke="#fff" strokeOpacity="0.5" strokeWidth="1.4" fill="none" strokeLinecap="round" />
 

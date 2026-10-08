@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Entrance from "@/components/home/Entrance";
+import { scoopPictures, splashPictures } from "@/lib/media";
 import FlavourShowcase from "@/components/flavours/FlavourShowcase";
 import ProductCard from "@/components/product/ProductCard";
 import Scoop from "@/components/art/Scoop";
@@ -14,7 +15,7 @@ export default function Home() {
 
   return (
     <>
-      <Entrance />
+      <Entrance pictures={scoopPictures()} splashes={splashPictures()} />
 
       <FlavourShowcase />
 
