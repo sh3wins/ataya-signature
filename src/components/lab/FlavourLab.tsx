@@ -137,6 +137,7 @@ export default function FlavourLab({
       flavour: a,
       from: q ? q(".lab-b-wrap")[0] : null,
       splash: splashes[a],
+      onImpact: () => play("splat"),
       reducedMotion,
       tempo: 1.35,
       colours: { light: mixColour(A.scoop[0], B.scoop[0], 0.5), mid: A.scoop[1], deep: A.scoop[2], swirl: B.scoop[1] },

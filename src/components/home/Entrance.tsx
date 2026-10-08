@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Scoop from "@/components/art/Scoop";
 import { flavours, flavourMap, flavourVars, type FlavourSlug } from "@/lib/flavours";
-import { playMelt } from "@/components/melt/playMelt";
+import { playMelt, preloadBurst, preloadFilm, preloadSplash, preloadSplashVideo } from "@/components/melt/playMelt";
 import { useExperience } from "@/components/providers/ExperienceProvider";
 import DressReveal from "./DressReveal";
 
@@ -20,9 +20,13 @@ type Stage = "choose" | "melting" | "revealed";
 export default function Entrance({
   pictures = {},
   splashes = {},
+  bursts = {},
+  films = {},
 }: {
   pictures?: Record<string, string>;
   splashes?: Record<string, string>;
+  bursts?: Record<string, string>;
+  films?: Record<string, string>;
 }) {
   const root = useRef<HTMLElement>(null);
   const scoopWrap = useRef<HTMLDivElement>(null);
@@ -96,6 +100,9 @@ export default function Entrance({
         flavour: f,
         from: scoopInner.current,
         splash: splashes[f],
+        burst: bursts[f],
+        film: films[f],
+        onImpact: () => play("splat"),
         reducedMotion,
         onCovered: () => {
           setStage("revealed");
@@ -103,7 +110,7 @@ export default function Entrance({
         onDone: () => setRevealed(true),
       });
     },
-    [stage, play, reducedMotion, splashes],
+    [stage, play, reducedMotion, splashes, bursts, films],
   );
 
   const reset = useCallback(() => {
@@ -118,9 +125,14 @@ export default function Entrance({
 
   // have the splash ready before the scoop is tapped
   useEffect(() => {
-    const src = splashes[shown];
-    if (src) new Image().src = src;
-  }, [shown, splashes]);
+    const base = splashes[shown];
+    if (base) preloadSplash(base);
+    if (films[shown]) preloadFilm(films[shown]);
+    else if (bursts[shown]) {
+      preloadBurst(bursts[shown]);
+      preloadSplashVideo(bursts[shown].replace("/burst/", "/splashvid/"));
+    }
+  }, [shown, splashes, bursts, films]);
 
   if (stage === "revealed" && chosen) return <DressReveal flavour={chosen} ready={revealed} onChooseAgain={reset} />;
 

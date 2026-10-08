@@ -42,14 +42,38 @@ export function scoopPictures(): Record<string, string> {
   return picturesIn("scoops");
 }
 
-/** The splash that bursts out of the scoop when it is tapped: public/splash/<flavour>.webp */
+/** The splash pieces thrown when the scoop is tapped: public/splash/<flavour>/<piece>.webp */
 export function splashPictures(): Record<string, string> {
-  return picturesIn("splash");
+  const dir = path.join(process.cwd(), "public", "splash");
+  const out: Record<string, string> = {};
+  if (!fs.existsSync(dir)) return out;
+  for (const f of fs.readdirSync(dir)) {
+    if (fs.existsSync(path.join(dir, f, "radial.webp"))) out[f] = `/splash/${f}`;
+  }
+  return out;
 }
 
 /** Two flavours swirled on one cone, for the Flavour Lab: public/mix/<first>-<second>.webp */
 export function mixPictures(): Record<string, string> {
   return picturesIn("mix");
+}
+
+/** The swirl bursting, as video frames: public/burst/<flavour>/00.webp … */
+export function burstPictures(): Record<string, string> {
+  const dir = path.join(process.cwd(), "public", "burst");
+  const out: Record<string, string> = {};
+  if (!fs.existsSync(dir)) return out;
+  for (const f of fs.readdirSync(dir)) if (fs.existsSync(path.join(dir, f, "00.webp"))) out[f] = `/burst/${f}`;
+  return out;
+}
+
+/** The two films (the cone spinning and bursting, then melting off): public/film/<flavour>/a00.webp … */
+export function filmPictures(): Record<string, string> {
+  const dir = path.join(process.cwd(), "public", "film");
+  const out: Record<string, string> = {};
+  if (!fs.existsSync(dir)) return out;
+  for (const f of fs.readdirSync(dir)) if (fs.existsSync(path.join(dir, f, "a00.webp"))) out[f] = `/film/${f}`;
+  return out;
 }
 
 function picturesIn(folder: string): Record<string, string> {

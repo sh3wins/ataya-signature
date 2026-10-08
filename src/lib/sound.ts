@@ -65,6 +65,11 @@ export const sounds = {
     noise(1.6, 0.06, 900);
     tone(160, 60, 1.2, 0.05);
   },
+  /** a wet slap of thick cream hitting glass */
+  splat() {
+    noise(0.14, 0.09 + Math.random() * 0.05, 700 + Math.random() * 500);
+    tone(150 + Math.random() * 40, 48, 0.16, 0.12);
+  },
   tap() {
     tone(420, 300, 0.06, 0.05, "triangle");
   },

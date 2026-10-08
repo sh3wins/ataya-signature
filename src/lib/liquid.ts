@@ -573,10 +573,10 @@ void main(){
   vec3 n = normalize(vec3(-grad*64.0*body + outward*rim*(0.75 - 0.4*hEdge), 1.0));
   // the open surface is not flat: it lies in soft, glossy folds
   float open = (1.0 - body) * a;
-  vec2 fp = gl_FragCoord.xy / 250.0;
+  vec2 fp = gl_FragCoord.xy / 200.0;
   float f0 = fold(fp);
   vec2 fg = vec2(fold(fp + vec2(0.07, 0.0)) - f0, fold(fp + vec2(0.0, 0.07)) - f0) / 0.07;
-  n = normalize(vec3(n.xy - fg*0.2*open, n.z));
+  n = normalize(vec3(n.xy - fg*0.27*open, n.z));
 
   vec3 L = normalize(vec3(-0.45, 0.6, 0.66));
   float diff = clamp(dot(n, L), 0.0, 1.0);
