@@ -18,16 +18,8 @@ export default function ScoopStack({ flavours, className = "" }: { flavours: Fla
           />
         ))}
       </div>
-      <svg viewBox="0 0 80 100" className="absolute bottom-0 left-1/2 h-24 w-20 -translate-x-1/2">
-        <defs>
-          <pattern id="waffle" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="10" height="10" fill="#D9A864" />
-            <path d="M0 0 H10 M0 0 V10" stroke="#B07E3E" strokeWidth="1.6" />
-          </pattern>
-        </defs>
-        <path d="M 4 4 L 76 4 L 42 98 Q 40 100 38 98 Z" fill="url(#waffle)" />
-        <path d="M 4 4 L 76 4 L 42 98 Q 40 100 38 98 Z" fill="none" stroke="#9A6A30" strokeOpacity=".4" />
-      </svg>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/scoops/cone-empty.webp" alt="" className="absolute bottom-0 left-1/2 h-28 w-auto -translate-x-1/2" />
     </div>
   );
 }

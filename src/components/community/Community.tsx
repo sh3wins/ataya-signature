@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Scoop from "@/components/art/Scoop";
 import { Button } from "@/components/ui/Button";
 import { useExperience } from "@/components/providers/ExperienceProvider";
 import { flavours, type FlavourSlug } from "@/lib/flavours";
@@ -115,6 +114,14 @@ export default function Community({
     ];
   }, [saved, filter]);
 
+  // a few honest numbers for the masthead, from what is actually in the Parlour
+  const stats = useMemo(() => {
+    const all: Post[] = [...saved.posts, ...samplePosts].filter((p) => !saved.removed.includes(p.id));
+    const questions = all.filter((p) => p.kind === "question");
+    const answered = questions.filter((q) => [...q.comments, ...(saved.comments[q.id] ?? [])].some((c) => c.studio));
+    return { looks: all.filter((p) => p.kind === "look").length, questions: questions.length, answered: answered.length };
+  }, [saved]);
+
   const share = () => {
     const body = text.trim();
     if (!body || !canPost) return;
@@ -184,9 +191,10 @@ export default function Community({
     toast("The preview is back to how it started.");
   };
 
+  // quiet tabs with a fine underline: calmer than pills, still easy to tap
   const chip = (on: boolean) =>
-    `rounded-full border px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors duration-200 ${
-      on ? "border-ink bg-ink text-paper" : "border-line hover:border-ink/50"
+    `relative -mb-px border-b px-0.5 pb-3 pt-1 text-[0.7rem] font-semibold uppercase tracking-[0.2em] transition-colors duration-200 ${
+      on ? "border-ink text-ink" : "border-transparent text-muted hover:text-ink"
     }`;
 
   return (
@@ -196,49 +204,35 @@ export default function Community({
           <FruitDefs />
           {/* Opening */}
           <header className="relative mx-auto max-w-[84rem] px-5 sm:px-8">
-            <div className="grid items-end gap-8 md:grid-cols-[1fr_auto]">
-              <div>
-                <p className="eyebrow rise text-muted">
-                  The Ataya Signature community
-                </p>
+            {/* the masthead: a members' lounge, not a playground */}
+            <div className="lux-card relative overflow-hidden rounded-[var(--radius-soft)] text-[#fbf6ee]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/lookbook/strawberry.webp" alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(12_10_9/0.88)_0%,rgb(12_10_9/0.62)_55%,rgb(12_10_9/0.25)_100%)]" />
+              <div className="relative px-6 pb-8 pt-14 sm:px-12 sm:pb-12 sm:pt-20">
+                <p className="eyebrow rise text-[#cfb07c]">The Ataya Signature community</p>
                 <h1
-                  className="rise mt-4 whitespace-nowrap font-display text-[clamp(3.2rem,10vw,9rem)] leading-[0.9]"
+                  className="rise mt-4 whitespace-nowrap font-display text-[clamp(3.2rem,9vw,8rem)] leading-[0.9]"
                   style={{ animationDelay: "80ms" }}
                 >
                   The <span className="italic">Parlour</span>
                 </h1>
-                <p
-                  className="rise mt-6 max-w-xl text-lg text-muted"
-                  style={{ animationDelay: "160ms" }}
-                >
-                  Where the people who wear the dresses meet the people who make
-                  them. Share your look, ask the studio anything, and help
-                  decide what we make next.
+                <p className="rise mt-5 max-w-lg text-[1.05rem] leading-relaxed text-[#fbf6ee]/80" style={{ animationDelay: "160ms" }}>
+                  Where the people who wear the dresses meet the people who make them. Share your look, ask the studio
+                  anything, and help decide what we make next.
                 </p>
-              </div>
-              <div
-                aria-hidden
-                className="rise hidden items-end md:flex"
-                style={{ animationDelay: "220ms" }}
-              >
-                <Scoop
-                  flavour="strawberry"
-                  rich={false}
-                  shadow={false}
-                  className="h-28 w-28 -rotate-12"
-                />
-                <Scoop
-                  flavour="pistachio"
-                  rich={false}
-                  shadow={false}
-                  className="-ml-8 h-36 w-36"
-                />
-                <Scoop
-                  flavour="blueberry"
-                  rich={false}
-                  shadow={false}
-                  className="-ml-8 h-24 w-24 rotate-12"
-                />
+                <dl className="rise mt-10 grid max-w-xl grid-cols-3 gap-6 border-t border-[#cfb07c]/30 pt-6" style={{ animationDelay: "240ms" }}>
+                  {[
+                    [stats.looks, "Looks shared"],
+                    [stats.questions, "Questions asked"],
+                    [`${stats.answered}/${stats.questions}`, "Answered by the studio"],
+                  ].map(([n, label]) => (
+                    <div key={String(label)}>
+                      <dt className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-[#fbf6ee]/60">{label}</dt>
+                      <dd className="mt-1 font-display text-3xl tabular-nums sm:text-4xl">{n}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             </div>
 
@@ -273,10 +267,10 @@ export default function Community({
               {/* Share something */}
               <section
                 aria-label="Share something"
-                className="rounded-[var(--radius-soft)] bg-paper p-5 shadow-[var(--shadow-soft)] sm:p-7"
+                className="lux-card relative rounded-[var(--radius-soft)] border border-line bg-paper p-5 sm:p-7"
               >
                 <div
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-6 border-b border-line"
                   role="group"
                   aria-label="What are you sharing?"
                 >
@@ -419,7 +413,7 @@ export default function Community({
 
               {/* The feed */}
               <div
-                className="mt-10 flex flex-wrap gap-2"
+                className="mt-12 flex flex-wrap gap-6 border-b border-line"
                 role="group"
                 aria-label="Show"
               >
@@ -478,20 +472,20 @@ export default function Community({
                 }}
               />
 
-              <section className="rounded-[var(--radius-soft)] bg-ink p-6 text-paper on-dark">
-                <p className="eyebrow text-paper/50">A note from the studio</p>
+              <section className="rounded-[var(--radius-soft)] border border-line p-6">
+                <p className="eyebrow">A note from the studio</p>
                 <p className="mt-3 font-display text-2xl leading-snug">
                   We read everything here.{" "}
                   <span className="italic">Really.</span>
                 </p>
-                <p className="mt-3 text-sm text-paper/70">
+                <p className="mt-3 text-sm text-muted">
                   Questions about fit, fabric or delivery get an answer from us,
                   not a robot. Replies from us carry the Studio mark.
                 </p>
               </section>
 
               <section className="rounded-[var(--radius-soft)] border border-line p-6">
-                <p className="eyebrow text-muted">House rules</p>
+                <p className="eyebrow">House rules</p>
                 <ul className="mt-3 space-y-2 text-sm">
                   <li>Be kind. Everyone here has good taste.</li>
                   <li>Share your own photos only.</li>

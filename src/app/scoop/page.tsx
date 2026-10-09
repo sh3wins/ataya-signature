@@ -36,7 +36,7 @@ export default function ScoopPage() {
               </div>
               <div className="flex justify-between text-muted">
                 <dt>Delivery</dt>
-                <dd>{subtotal >= 15000 ? "Free in Nairobi" : "Calculated at checkout"}</dd>
+                <dd>Calculated at checkout</dd>
               </div>
             </dl>
             <ButtonLink href="/checkout" className="mt-6 w-full">

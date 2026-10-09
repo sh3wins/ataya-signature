@@ -23,7 +23,11 @@ export function Avatar({ name, studio, colour, small }: { name: string; studio?:
 }
 
 export function StudioBadge() {
-  return <span className="rounded-full bg-ink px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-paper">Studio</span>;
+  return (
+    <span className="studio-badge rounded-full border border-[#b8975e]/60 bg-[#cfb07c]/15 px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-[#8a6a36]">
+      Studio
+    </span>
+  );
 }
 
 function when(item: { ago?: string; at?: number }, now: number) {
@@ -120,7 +124,7 @@ export default function PostCard({
   return (
     <article
       aria-label={`${kindLabel[post.kind]} from ${post.author}`}
-      className={`rounded-[var(--radius-soft)] bg-paper p-5 shadow-[var(--shadow-soft)] sm:p-7 ${post.studio ? "ring-1 ring-ink/10" : ""}`}
+      className={`lux-card relative rounded-[var(--radius-soft)] border bg-paper p-5 sm:p-7 ${post.studio ? "border-[#cfb07c]/45" : "border-line"}`}
     >
       <header className="flex items-start gap-3">
         <Avatar name={post.author} studio={post.studio} colour={f?.colour} />

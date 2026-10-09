@@ -203,6 +203,9 @@ html[data-theme="dark"] ::selection {
 html[data-theme="dark"] .eyebrow:not([class*="text-"]):not([style*="color"]) {
   color: var(--color-gold);
 }
+html[data-theme="dark"] .studio-badge {
+  color: var(--color-gold);
+}
 /* cards: a fine champagne edge, a sheen across the top, a deep shadow beneath */
 html[data-theme="dark"] .lux-card {
   box-shadow: 0 40px 70px -35px rgb(0 0 0 / 0.9);

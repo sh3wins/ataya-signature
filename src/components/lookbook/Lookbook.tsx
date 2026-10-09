@@ -6,7 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import DressArt from "@/components/art/DressArt";
 import Scoop from "@/components/art/Scoop";
-import FlavourWorld from "@/components/art/FlavourWorld";
 import { ButtonLink } from "@/components/ui/Button";
 import { flavourMap, type FlavourSlug } from "@/lib/flavours";
 import { getProduct } from "@/lib/products";
@@ -43,11 +42,14 @@ function SceneView({ s, index }: { s: Scene; index: number }) {
   const p = getProduct(s.dress)!;
   return (
     <div className="lb-scene absolute inset-0" style={{ zIndex: index + 1 }}>
-      <div className="lb-inner absolute inset-0 overflow-hidden" style={{ background: f.colour, color: f.ink }}>
+      <div className="lb-inner absolute inset-0 overflow-hidden text-[#fbf6ee]" style={{ background: f.colour }}>
+        {/* the real place for this hour, softly graded towards the flavour */}
         <div className="lb-world absolute -inset-10">
-          <FlavourWorld flavour={s.flavour} className="[&>div:nth-child(2)]:!left-1/2" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/lookbook/${s.flavour}.webp`} alt="" className="h-full w-full object-cover" />
+          <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgb(0 0 0 / 0.18) 0%, transparent 35%, rgb(0 0 0 / 0.55) 100%), color-mix(in srgb, ${f.raw.colour} 22%, transparent)` }} />
         </div>
-        <p aria-hidden className="lb-time absolute left-1/2 top-[16%] -translate-x-1/2 font-display text-[clamp(6rem,26vw,24rem)] leading-none opacity-15">
+        <p aria-hidden className="lb-time absolute left-1/2 top-[16%] -translate-x-1/2 font-display text-[clamp(6rem,26vw,24rem)] leading-none opacity-25 mix-blend-overlay">
           {s.time}
         </p>
         <div className="lb-dress absolute inset-x-0 bottom-[4%] top-[18%] flex justify-center">
@@ -56,7 +58,7 @@ function SceneView({ s, index }: { s: Scene; index: number }) {
         <div className="lb-scoop absolute right-[8%] top-[22%] hidden md:block">
           <Scoop flavour={s.flavour} cone rich={false} className="h-44 w-auto rotate-12" />
         </div>
-        <div className="lb-text absolute bottom-8 left-5 max-w-sm sm:bottom-14 sm:left-10">
+        <div className="lb-text absolute bottom-8 left-5 max-w-sm [text-shadow:0_2px_18px_rgb(0_0_0/0.35)] sm:bottom-14 sm:left-10">
           <p className="eyebrow opacity-70">{s.time} · {f.name}</p>
           <h2 className="mt-3 font-display text-[clamp(2.4rem,5vw,4.5rem)] leading-[0.95]">{s.title}</h2>
           <p className="mt-3 opacity-80">{s.line}</p>

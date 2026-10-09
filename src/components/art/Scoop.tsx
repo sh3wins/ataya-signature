@@ -90,6 +90,24 @@ export default function Scoop({
   drawn = false,
 }: ScoopProps) {
   const uid = useId().replace(/:/g, "");
+  // Without a cone: just the real swirl (public/scoops/<flavour>-top.webp)
+  if (!cone && !drawn) {
+    return (
+      <svg
+        viewBox="0 0 200 210"
+        data-scoop-vb={210}
+        className={className}
+        style={style}
+        role={title ? "img" : undefined}
+        aria-label={title}
+        aria-hidden={title ? undefined : true}
+        overflow="visible"
+      >
+        {shadow && <ellipse cx="100" cy="204" rx="54" ry="6" fill="#000" opacity="0.2" style={{ filter: "blur(4px)" }} />}
+        <image href={`/scoops/${flavour}-top.webp`} x="0" y="0" width="200" height="210" preserveAspectRatio="xMidYMid meet" />
+      </svg>
+    );
+  }
   // Cones use the real soft-serve photo (public/scoops/<flavour>.webp, made to fit this exact frame)
   if (cone && !drawn) {
     return (

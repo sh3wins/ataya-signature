@@ -7,10 +7,12 @@ import ScoopStack from "@/components/cart/ScoopStack";
 import { flavourMap } from "@/lib/flavours";
 import { formatKES } from "@/lib/products";
 
+// Delivery fees are placeholders until the owner confirms her courier prices
 const DELIVERY = {
-  nairobi: { label: "Nairobi (1–2 days)", fee: 350 },
-  kenya: { label: "Rest of Kenya (2–4 days)", fee: 650 },
-  pickup: { label: "Pick up from the studio", fee: 0 },
+  kenya: { label: "Kenya (1–4 days)", fee: 650 },
+  africa: { label: "Rest of Africa (3–7 days)", fee: 2500 },
+  world: { label: "Rest of the world (5–10 days)", fee: 4500 },
+  pickup: { label: "Pick up from the studio in Nairobi", fee: 0 },
 } as const;
 type DeliveryKey = keyof typeof DELIVERY;
 
@@ -18,11 +20,11 @@ const field = "mt-1.5 w-full rounded-xl border border-line bg-paper px-4 py-3 ou
 
 export default function CheckoutPage() {
   const { items, subtotal, clear } = useScoop();
-  const [delivery, setDelivery] = useState<DeliveryKey>("nairobi");
+  const [delivery, setDelivery] = useState<DeliveryKey>("kenya");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [placed, setPlaced] = useState<string | null>(null);
 
-  const fee = delivery === "nairobi" && subtotal >= 15000 ? 0 : DELIVERY[delivery].fee;
+  const fee = DELIVERY[delivery].fee;
   const total = subtotal + fee;
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -30,7 +32,7 @@ export default function CheckoutPage() {
     const data = new FormData(e.currentTarget);
     const errs: Record<string, string> = {};
     if (!String(data.get("name")).trim()) errs.name = "Please enter your name.";
-    if (!/^(\+?254|0)?[17]\d{8}$/.test(String(data.get("phone")).replace(/\s/g, ""))) errs.phone = "Please enter a Kenyan phone number, e.g. 0712 345 678.";
+    if (!/^\+?[0-9()-]{7,18}$/.test(String(data.get("phone")).replace(/\s/g, ""))) errs.phone = "Please enter a phone number, with your country code if you're outside Kenya (e.g. +44 20 7946 0000).";
     if (!/^\S+@\S+\.\S+$/.test(String(data.get("email")))) errs.email = "Please enter a valid email.";
     if (delivery !== "pickup" && !String(data.get("address")).trim()) errs.address = "Please enter a delivery address.";
     setErrors(errs);
@@ -92,7 +94,7 @@ export default function CheckoutPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block text-sm">
                 Phone (M-Pesa)
-                <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="0712 345 678" className={field} aria-invalid={!!errors.phone} aria-describedby="phone-err" />
+                <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="+254 712 345 678" className={field} aria-invalid={!!errors.phone} aria-describedby="phone-err" />
                 {err("phone")}
               </label>
               <label className="block text-sm">
@@ -111,12 +113,12 @@ export default function CheckoutPage() {
                   <input type="radio" name="delivery" value={k} checked={delivery === k} onChange={() => setDelivery(k)} className="accent-ink" />
                   {DELIVERY[k].label}
                 </span>
-                <span>{k === "nairobi" && subtotal >= 15000 ? "Free" : DELIVERY[k].fee ? formatKES(DELIVERY[k].fee) : "Free"}</span>
+                <span>{DELIVERY[k].fee ? formatKES(DELIVERY[k].fee) : "Free"}</span>
               </label>
             ))}
             {delivery !== "pickup" && (
               <label className="block pt-2 text-sm">
-                Delivery address
+                Delivery address, including your country
                 <textarea id="address" name="address" rows={3} autoComplete="street-address" className={field} aria-invalid={!!errors.address} aria-describedby="address-err" />
                 {err("address")}
               </label>

@@ -13,15 +13,8 @@ export const metadata: Metadata = {
 
 /** Something still under the lid */
 function Cloche({ className = "" }: { className?: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 240 190" className={className} fill="none">
-      <ellipse cx="120" cy="172" rx="104" ry="9" fill="#000" opacity=".35" />
-      <path d="M22 150a98 98 0 0 1 196 0Z" fill="#2c2622" stroke="#fcf9f3" strokeOpacity=".5" strokeWidth="1.5" />
-      <path d="M52 132a70 70 0 0 1 50-62" stroke="#fcf9f3" strokeOpacity=".55" strokeWidth="5" strokeLinecap="round" />
-      <circle cx="120" cy="44" r="10" fill="#2c2622" stroke="#fcf9f3" strokeOpacity=".5" strokeWidth="1.5" />
-      <rect x="8" y="150" width="224" height="12" rx="6" fill="#fcf9f3" fillOpacity=".9" />
-    </svg>
-  );
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/cloche.webp" alt="" aria-hidden className={`${className} drop-shadow-[0_30px_30px_rgb(0_0_0/0.45)]`} />;
 }
 
 export default function CollectionsPage() {
@@ -68,8 +61,7 @@ export default function CollectionsPage() {
                 </div>
               ) : (
                 <div aria-hidden className="relative my-8 flex justify-center">
-                  <Cloche className="h-40 w-auto sm:h-48" />
-                  <span className="absolute left-1/2 top-[44%] -translate-x-1/2 font-display text-5xl italic text-paper/80">?</span>
+                  <Cloche className="h-36 w-auto sm:h-44" />
                 </div>
               )}
 

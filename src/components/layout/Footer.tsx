@@ -76,8 +76,8 @@ export default function Footer() {
           <p className="eyebrow text-paper/50">Help</p>
           <ul className="mt-4 space-y-2 text-sm">
             <li><Link href="/scoop" className="hover:underline">Your scoop</Link></li>
-            <li><span className="text-paper/60">Delivery across Kenya</span></li>
-            <li><span className="text-paper/60">Free returns within 14 days</span></li>
+            <li><span className="text-paper/60">Worldwide delivery</span></li>
+            <li><span className="text-paper/60">Free returns within 48 hours</span></li>
             <li><a href="mailto:hello@ataya.example" className="hover:underline">hello@ataya.example</a></li>
           </ul>
         </div>

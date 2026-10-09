@@ -112,7 +112,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
           {msg.text}
         </p>
       )}
-      <p className="mt-3 text-xs text-muted">&ldquo;Scoop&rdquo; is your shopping bag. Free delivery in Nairobi over KES 15,000.</p>
+      <p className="mt-3 text-xs text-muted">&ldquo;Scoop&rdquo; is your shopping bag. We deliver worldwide.</p>
 
       <dl className="mt-10 divide-y divide-line border-y border-line text-sm">
         {[
@@ -136,7 +136,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
         <summary className="flex cursor-pointer list-none justify-between font-semibold">
           Delivery & returns <span className="transition-transform group-open:rotate-45">+</span>
         </summary>
-        <p className="mt-3 text-muted">Delivery across Kenya in 1–4 working days. Free returns within 14 days, unworn with tags.</p>
+        <p className="mt-3 text-muted">We deliver worldwide: 1–4 working days in Kenya, longer further afield. Free returns within 48 hours of delivery, unworn with tags.</p>
       </details>
       <details className="group border-b border-line py-4 text-sm">
         <summary className="flex cursor-pointer list-none justify-between font-semibold">
