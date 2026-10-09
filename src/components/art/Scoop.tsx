@@ -42,6 +42,8 @@ export interface ScoopProps {
   /** Sit the scoop on a waffle cone */
   cone?: boolean;
   title?: string;
+  /** Draw it instead of using the photo (cones only) */
+  drawn?: boolean;
 }
 
 function Flecks({ flavour, colour }: { flavour: FlavourSlug; colour: string }) {
@@ -85,8 +87,27 @@ export default function Scoop({
   shadow = true,
   cone = false,
   title,
+  drawn = false,
 }: ScoopProps) {
   const uid = useId().replace(/:/g, "");
+  // Cones use the real soft-serve photo (public/scoops/<flavour>.webp, made to fit this exact frame)
+  if (cone && !drawn) {
+    return (
+      <svg
+        viewBox="0 0 200 330"
+        data-scoop-vb={330}
+        className={className}
+        style={style}
+        role={title ? "img" : undefined}
+        aria-label={title}
+        aria-hidden={title ? undefined : true}
+        overflow="visible"
+      >
+        {shadow && <ellipse cx="100" cy="326" rx="42" ry="6" fill="#000" opacity="0.18" style={{ filter: "blur(4px)" }} />}
+        <image href={`/scoops/${flavour}.webp`} x="0" y="0" width="200" height="330" preserveAspectRatio="xMidYMid meet" />
+      </svg>
+    );
+  }
   const g = (n: string) => `${n}-${uid}`;
   const f = flavourMap[flavour];
   const [light, mid, deep] = f.scoop;

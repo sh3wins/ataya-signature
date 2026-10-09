@@ -24,7 +24,7 @@ function FlavourObject({ f, active, onActive }: { f: Flavour; active: boolean; o
 
   return (
     <li
-      className={`group/fl relative min-h-[15rem] overflow-hidden rounded-[var(--radius-soft)] transition-[flex-grow] duration-700 ease-[var(--ease-silk)] md:min-h-[34rem] ${
+      className={`lux-card group/fl relative min-h-[15rem] overflow-hidden rounded-[var(--radius-soft)] transition-[flex-grow] duration-700 ease-[var(--ease-silk)] md:min-h-[34rem] ${
         active ? "md:flex-[2.2]" : "md:flex-1"
       }`}
       style={{ background: f.colour, color: f.ink }}

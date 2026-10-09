@@ -139,41 +139,83 @@
 }
 
 html[data-theme="dark"] {
+  /* MIDNIGHT — a boutique after closing: near-black with a warm undertone,
+     ivory type, champagne hairlines, deep jewel-toned rooms for each flavour */
   color-scheme: dark;
-  --page-bg: #16110f;
-  --color-cream: #16110f;
-  --color-paper: #211a17;
-  --color-ink: #f4ece0;
-  --color-muted: #b3a697;
-  --color-line: rgb(244 236 224 / 0.16);
-  --color-cherry: #f0647a;
-  --shadow-soft: 0 30px 60px -30px rgb(0 0 0 / 0.7);
-  --shadow-float: 0 50px 80px -40px rgb(0 0 0 / 0.8);
+  --page-bg: #0c0a09;
+  --color-cream: #0c0a09;
+  --color-paper: #15120f;
+  --color-ink: #f1e9dc;
+  --color-muted: #9d9385;
+  --color-line: rgb(214 190 150 / 0.14);
+  --color-cherry: #ec6f82;
+  --color-gold: #cfb07c;
+  --shadow-soft: 0 30px 60px -30px rgb(0 0 0 / 0.85);
+  --shadow-float: 0 50px 90px -40px rgb(0 0 0 / 0.9);
 
-  --fl-strawberry: #4e1b26;
-  --fl-strawberry-cream: #6b2a37;
-  --fl-strawberry-ink: #f6e6e4;
-  --fl-strawberry-deep: #f2a9b5;
+  --fl-strawberry: #2a0f16;
+  --fl-strawberry-cream: #42182a;
+  --fl-strawberry-ink: #f7e8e6;
+  --fl-strawberry-deep: #eba7b3;
 
-  --fl-vanilla: #3f3220;
-  --fl-vanilla-cream: #5a4930;
-  --fl-vanilla-ink: #f4ecdc;
-  --fl-vanilla-deep: #e2c79a;
+  --fl-vanilla: #221b13;
+  --fl-vanilla-cream: #3a2e1f;
+  --fl-vanilla-ink: #f5ecdc;
+  --fl-vanilla-deep: #dcc193;
 
-  --fl-pistachio: #2a341f;
-  --fl-pistachio-cream: #3d4a2d;
-  --fl-pistachio-ink: #eef1e2;
-  --fl-pistachio-deep: #c3d49c;
+  --fl-pistachio: #141a0f;
+  --fl-pistachio-cream: #26301c;
+  --fl-pistachio-ink: #eef2e2;
+  --fl-pistachio-deep: #bfd292;
 
-  --fl-blueberry: #20264e;
-  --fl-blueberry-cream: #2f376c;
-  --fl-blueberry-ink: #e9ebf8;
-  --fl-blueberry-deep: #aeb8ee;
+  --fl-blueberry: #11142b;
+  --fl-blueberry-cream: #1f2550;
+  --fl-blueberry-ink: #ebedf9;
+  --fl-blueberry-deep: #aab4ee;
 
-  --fl-mango: #4a2a12;
-  --fl-mango-cream: #66401f;
-  --fl-mango-ink: #fbebd9;
-  --fl-mango-deep: #f5b878;
+  --fl-mango: #28160a;
+  --fl-mango-cream: #432714;
+  --fl-mango-ink: #fbecd9;
+  --fl-mango-deep: #f2b06e;
+
+  scrollbar-color: #3a322a #0c0a09;
+}
+
+/* film grain instead of paper grain: lighter, it catches the light rather than darkening */
+html[data-theme="dark"] body::before {
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+/* a soft vignette, like a lit room with dark corners */
+html[data-theme="dark"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 79;
+  background: radial-gradient(130% 100% at 50% 40%, transparent 55%, rgb(0 0 0 / 0.42) 100%);
+}
+html[data-theme="dark"] ::selection {
+  background: var(--color-gold);
+  color: #0c0a09;
+}
+/* small capital labels turn champagne unless they already have a colour */
+html[data-theme="dark"] .eyebrow:not([class*="text-"]):not([style*="color"]) {
+  color: var(--color-gold);
+}
+/* cards: a fine champagne edge, a sheen across the top, a deep shadow beneath */
+html[data-theme="dark"] .lux-card {
+  box-shadow: 0 40px 70px -35px rgb(0 0 0 / 0.9);
+}
+html[data-theme="dark"] .lux-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(214 190 150 / 0.13), inset 0 1px 0 rgb(255 240 220 / 0.1);
+  background: radial-gradient(120% 70% at 50% 0%, rgb(255 238 214 / 0.08), transparent 60%);
 }
 
 /* Blocks that are always dark (footer, the Flavour Lab, studio notes) keep
@@ -181,7 +223,7 @@ html[data-theme="dark"] {
 html[data-theme="dark"] .on-dark {
   --color-cream: #f7f1e6;
   --color-paper: #fcf9f3;
-  --color-ink: #0c0908;
+  --color-ink: #060505;
   --color-muted: #6f655b;
   --color-line: rgb(29 25 22 / 0.14);
   --color-cherry: #b3122b;

@@ -10,7 +10,7 @@ export default function ProductCard({ product, tall = false, className = "" }: {
   return (
     <Link href={`/dresses/${product.slug}`} className={`group block ${className}`} data-flavour-colour={f.colour}>
       <div
-        className={`relative overflow-hidden rounded-[var(--radius-soft)] ${tall ? "aspect-[3/4.4]" : "aspect-[3/4]"}`}
+        className={`lux-card relative overflow-hidden rounded-[var(--radius-soft)] ${tall ? "aspect-[3/4.4]" : "aspect-[3/4]"}`}
         style={{ background: f.colour }}
       >
         <div className="absolute inset-0 grid place-items-center transition-all duration-700 ease-[var(--ease-silk)] group-hover:-translate-y-2 group-hover:opacity-0">
