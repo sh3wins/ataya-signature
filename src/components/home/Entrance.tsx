@@ -137,7 +137,9 @@ export default function Entrance({
   if (stage === "revealed" && chosen) return <DressReveal flavour={chosen} ready={revealed} onChooseAgain={reset} />;
 
   const f = flavourMap[shown];
-  const photo = pictures[shown];
+  // with a film, the cone on the page is the film's own first frame, so the
+  // hand-over into the film is seamless (no swap to a different cone)
+  const photo = films[shown] ? `${films[shown]}/poster.webp` : pictures[shown];
   const bg = `color-mix(in srgb, var(--color-cream), ${f.colour} ${stage === "melting" ? 75 : 40}%)`;
 
   return (

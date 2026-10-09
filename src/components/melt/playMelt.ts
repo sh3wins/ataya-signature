@@ -219,9 +219,9 @@ const FILM_PLACE = { left: -193.05, top: 9.08, width: 573.22, height: 322.43 };
 const filmCache = new Map<string, { a: HTMLImageElement[]; b: HTMLImageElement[] }>();
 
 /* Browsers that can play a see-through video (Chrome, Edge, Firefox, Android) get the real
-   films: full size, 24 frames a second. Apple's engine (every iPhone browser, Safari)
+   films: 1080p, 24 frames a second. Apple's engine (every iPhone browser, Safari)
    can't, so it plays the films as picture frames instead. */
-const FILM_SRC = { w: 1366, h: 768 };
+const FILM_SRC = { w: 1920, h: 1080 };
 const videoCache = new Map<string, { a: HTMLVideoElement; b: HTMLVideoElement }>();
 function alphaVideoOk() {
   if (typeof document === "undefined") return false;
@@ -407,7 +407,7 @@ async function playFilmVideo(
   } catch {
     /* it will just show its first frame and fade */
   }
-  await gsap.to([a, back], { opacity: 0, duration: 0.25 / tempo, ease: "power1.out" }).then();
+  await gsap.to([a, back], { opacity: 0, duration: 0.45 / tempo, ease: "power1.inOut" }).then();
   a.remove();
   back.remove();
   const fade = () => {
@@ -483,7 +483,7 @@ async function playFilm(
   // FILM B — the cream melts down and off, uncovering the new page
   const B = filmCanvas(47);
   B.draw(b[0]);
-  await gsap.to([A.cv, back], { opacity: 0, duration: 0.25 / tempo, ease: "power1.out" }).then();
+  await gsap.to([A.cv, back], { opacity: 0, duration: 0.45 / tempo, ease: "power1.inOut" }).then();
   A.cv.remove();
   back.remove();
   await playFrames(b, FILM.fpsB * tempo, B.draw, (_, p) => {
