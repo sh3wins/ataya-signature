@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import { LiquidGL, MeltSim, type Dome, type LiquidColours } from "@/lib/liquid";
 import { flavourMap, type FlavourSlug, type MeltPhysics } from "@/lib/flavours";
+import { tintVideo } from "@/lib/tintVideo";
 
 /**
  * Plays the signature Ataya melt.
@@ -28,6 +29,8 @@ export interface PlayMeltOptions {
   from?: Element | null;
   /** Folder of video frames (public/burst/<flavour>) of the swirl bursting */
   burst?: string;
+  /** The Lab: two cones mixing, one video recoloured live for the chosen pair */
+  pair?: { src: string; first: string[]; second: string[]; rect: { left: number; top: number; width: number; height: number }; hide: HTMLElement[] };
   /** Folder of the two films (public/film/<flavour>): the cone spins and bursts, then melts off the screen */
   film?: string;
   /** Called each time a splat hits the screen (for a sound, a buzz) */
@@ -715,6 +718,7 @@ export async function playMelt({
   splash,
   burst,
   film,
+  pair,
   onImpact,
   onCovered,
   onTakeover,
@@ -805,7 +809,61 @@ export async function playMelt({
       if (navigator.vibrate) navigator.vibrate(18);
     };
     const draw = () => gl!.render(full.blobs, { ...look, flood: full.flood, pool: full.pool, time: time() * 2.2 });
-    if (burst) {
+    const pairPlayer = pair ? tintVideo(pair.src, pair.first, pair.second) : null;
+    if (pair && pairPlayer) {
+      // THE LAB: the two cones touch, swirl into one and burst; the marbled cream floods the screen
+      const { canvas: pc, video } = pairPlayer;
+      const S = pair.rect.height / 0.939;
+      const cx = pair.rect.left + pair.rect.width / 2;
+      Object.assign(pc.style, {
+        position: "fixed",
+        left: `${cx - S * 0.5}px`,
+        top: `${pair.rect.top - 0.026 * S}px`,
+        width: `${S}px`,
+        height: `${S}px`,
+        zIndex: "46",
+        pointerEvents: "none",
+        maxWidth: "none",
+        // soft oval edges, so the video's square never shows
+        maskImage: "radial-gradient(ellipse 54% 62% at 50% 47%, #000 80%, transparent 100%)",
+        webkitMaskImage: "radial-gradient(ellipse 54% 62% at 50% 47%, #000 80%, transparent 100%)",
+      });
+      await canPlay(video, 5000);
+      document.body.appendChild(pc);
+      video.playbackRate = 1.25 * tempo;
+      try {
+        await pairPlayer.play();
+      } catch {
+        /* shows its first frame */
+      }
+      pair.hide.forEach((el) => (el.style.opacity = "0"));
+      const rate = video.playbackRate;
+      gsap.delayedCall(2.2 / rate, impact);
+      // the solid, marbled cream floods out from the heart of the splash
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const ox = cx;
+      const oy = pair.rect.top + pair.rect.height * 0.4;
+      const reach = Math.hypot(Math.max(ox, W - ox), Math.max(oy, H - oy)) + 120;
+      const st = { r: 0 };
+      const paint = () => {
+        const mask = `radial-gradient(circle at ${ox}px ${oy}px, #000 ${Math.max(0, st.r - 80)}px, transparent ${st.r}px)`;
+        canvas.style.maskImage = mask;
+        canvas.style.webkitMaskImage = mask;
+        draw();
+      };
+      gsap.ticker.add(paint);
+      canvas.style.opacity = "1";
+      paint();
+      await gsap.to(st, { r: reach, duration: 1.6 / rate, delay: 3.3 / rate, ease: "power2.in" }).then();
+      gsap.ticker.remove(paint);
+      canvas.style.maskImage = "";
+      canvas.style.webkitMaskImage = "";
+      await gsap.to(pc, { opacity: 0, duration: 0.3 }).then();
+      pairPlayer.stop();
+      pc.remove();
+      pair.hide.forEach((el) => (el.style.opacity = ""));
+    } else if (burst) {
       // THE CONE SPINS AND EXPLODES, then a mass of cream crashes down across the screen
       const sv = burst.replace("/burst/", "/splashvid/");
       await Promise.all([burstReady(burst), splashVideoReady(sv)]);

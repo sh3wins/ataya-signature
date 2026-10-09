@@ -122,7 +122,22 @@ export default function FlavourLab({
     const A = flavourMap[a];
     const B = flavourMap[b];
     const q = stage.current ? gsap.utils.selector(stage.current) : null;
-    if (!reducedMotion && q) {
+    // the two cones on the stage, so the video can start exactly over them
+    const cones = q ? ([q(".lab-a")[0], q(".lab-b-wrap")[0]].filter(Boolean) as HTMLElement[]) : [];
+    let pair: Parameters<typeof playMelt>[0]["pair"];
+    if (cones.length === 2 && !reducedMotion) {
+      const r1 = cones[0].getBoundingClientRect();
+      const r2 = cones[1].getBoundingClientRect();
+      const left = Math.min(r1.left, r2.left);
+      const top = Math.min(r1.top, r2.top);
+      pair = {
+        src: "/lab-mix.mp4",
+        first: A.scoop,
+        second: B.scoop,
+        rect: { left, top, width: Math.max(r1.right, r2.right) - left, height: Math.max(r1.bottom, r2.bottom) - top },
+        hide: [...cones, ...(q ? q(".lab-plus") : [])] as HTMLElement[],
+      };
+    } else if (!reducedMotion && q) {
       // the two scoops lean in and touch…
       await gsap
         .timeline()
@@ -137,6 +152,7 @@ export default function FlavourLab({
       flavour: a,
       from: q ? q(".lab-b-wrap")[0] : null,
       splash: splashes[a],
+      pair,
       onImpact: () => play("splat"),
       reducedMotion,
       tempo: 1.35,
